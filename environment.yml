@@ -7,3 +7,6 @@ dependencies:
   - numpy
   - pytorch
   - matplotlib
+  - jupyterlab
+  - pip:
+    - jupyterlab_latex
