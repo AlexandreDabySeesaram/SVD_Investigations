@@ -1,13 +1,13 @@
 # Separability investigation of parametrised space clustering
 
-This code shows the separability proprieties of different ways of cluster the 1D space into two regions. 
+This code shows the separability proprieties of different ways of clustering the 1D space into two regions. 
 Two types of functions are used to do so:
 * A sharp step function (Heaviside),
 * A smooth one (Tanh).
 
 In both cases the position of the jump is parametrised by a scalar parameter $\alpha$. 
 
-Furhter investigation are conducted on moving front with a 
+Furhter investigations are conducted on moving front(s) with a 
 * A gaussian function that is moving 
 * Two gaussian functions moving at different rates
 

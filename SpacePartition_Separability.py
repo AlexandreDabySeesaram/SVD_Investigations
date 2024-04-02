@@ -48,7 +48,7 @@ plt.imshow(F.t(),cmap='gray')
 plt.title('Full field')
 plt.xlabel(r'$x$')
 plt.ylabel(r'$\alpha$')
-plt.savefig('../Results/FullField_'+Function+'.pdf', transparent=True)  
+plt.savefig('Results/FullField_'+Function+'.pdf', transparent=True)  
 plt.show()
 
 #%% SVD decomposition of the reference function
@@ -66,7 +66,7 @@ plt.imshow(F_truncated.t(),cmap='gray')
 plt.title(f'Truncated field, N={N}')
 plt.xlabel(r'$x$')
 plt.ylabel(r'$\alpha$')
-plt.savefig(f'../Results/TruncatedField_{N}_'+Function+'.pdf', transparent=True)  
+plt.savefig(f'Results/TruncatedField_{N}_'+Function+'.pdf', transparent=True)  
 plt.show()
 
 
@@ -80,7 +80,7 @@ plt.legend(loc="upper left")
 plt.title(f'2 slices of the field, N={N}')
 plt.xlabel(r'$x$')
 plt.ylabel(r'$f(x,\alpha)$')
-plt.savefig(f'../Results/Sliced_TruncatedField_{N}_'+Function+'.pdf', transparent=True)  
+plt.savefig(f'Results/Sliced_TruncatedField_{N}_'+Function+'.pdf', transparent=True)  
 plt.show()
 
 #%% Plot the decay of the singular values
@@ -88,7 +88,7 @@ plt.show()
 plt.semilogy(S)
 plt.ylabel(r'$\sigma_i^2$')
 plt.xlabel(r'Modes')
-plt.savefig(f'../Results/SVD_Decay_'+Function+'.pdf', transparent=True)  
+plt.savefig(f'Results/SVD_Decay_'+Function+'.pdf', transparent=True)  
 plt.show()
 
 # %% Interactive plot of the truncated function
