@@ -11,4 +11,7 @@ Furhter investigation are conducted on moving front with a
 * A gaussian function that is moving 
 * Two gaussian functions moving at different rates
 
-The code can be used interactively with [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/AlexandreDabySeesaram/SVD_Investigations/main)
+The code can be used interactively with [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/AlexandreDabySeesaram/SVD_Investigations/main?labpath=SpacePartition_Separability.ipynb)
+
+
+Note: For the moment latex does not work within binder so the captions are not interpreted using latex.
