@@ -1,8 +1,9 @@
 name: environment
 channels:
   - conda-forge
+  - pytorch
 dependencies:
   - python
   - numpy
-  - pytorch torchvision -c pytorch
+  - pytorch
   - matplotlib
