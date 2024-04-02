@@ -4,7 +4,5 @@ channels:
 dependencies:
   - python
   - numpy
-  - pip
-  - pip:
-    - torch
-    - matplotlib
+  - pytorch torchvision -c pytorch
+  - matplotlib
