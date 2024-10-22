@@ -17,16 +17,6 @@ jobs:
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
 
-      # Install Python and ipywidgets
-      # - name: Set up Python and install dependencies
-      #   uses: actions/setup-python@v4
-        # with:
-        #   python-version: '3.12'  
-      - name: Install jupyter and ipywidgets
-        run: |
-          pip install jupyter
-          pip install ipywidgets
-
       - name: Render and Publish
         uses: quarto-dev/quarto-actions/publish@v2
         with:
