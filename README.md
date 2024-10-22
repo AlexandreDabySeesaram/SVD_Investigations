@@ -15,3 +15,6 @@ The code can be used interactively with [![Binder](https://mybinder.org/badge_lo
 
 
 Note: For the moment latex does not work within binder so the captions are not interpreted using latex.
+
+
+A static website can be browsed at [https://alexandredabyseesaram.github.io/SVD_Investigations/](https://alexandredabyseesaram.github.io/SVD_Investigations/)
