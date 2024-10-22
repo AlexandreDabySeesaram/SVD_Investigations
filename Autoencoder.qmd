@@ -149,6 +149,7 @@ loss_v_vect = []
 # Train the model
 
 ```{python}
+#| echo: true
 
 ROM.train()
 F_train = F_train.to(mps_device)
