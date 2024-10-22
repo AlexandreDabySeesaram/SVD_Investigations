@@ -1,0 +1,21 @@
+---
+title: An SVD-Autoencoder comparison
+image: FENNI_TD.png
+toc: false
+about:
+  template: trestles
+  links:
+    - icon: github
+      text: Github
+      href: https://github.com/AlexandreDabySeesaram/SVD_Investigations/tree/main
+format:
+  html:
+    page-layout: full
+---
+
+# Welcome
+
+To this statis website with jupyternotebooks
+
+
+

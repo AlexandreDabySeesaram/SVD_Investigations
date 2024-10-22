@@ -1,0 +1,37 @@
+[
+  {
+    "objectID": "SVD.html",
+    "href": "SVD.html",
+    "title": "SVD",
+    "section": "",
+    "text": "Import libraries\nStart by importing pytorch & matplotlib. I could not make the latex interpreter work in binder, so the corresponding lines are commented out.\n\n\nCode\nimport torch \nimport matplotlib.pyplot as plt\n\n\n\n\nCreate the functions\nThe separability proprieties of several functions are investigated. This code first shows the separability proprieties of different ways of clustering the 1D space into two regions. Two types of functions are used to do so: * A sharp step function (Heaviside), * A smooth one (Tanh).\nIn both cases the position of the jump is parametrised by a scalar parameter \\(\\alpha\\).\nFurhter investigations are conducted on moving front(s) with a * A gaussian function that is moving * Two gaussian functions moving at different rates\n\n\nCode\nL = 10                                      # Space domain\nAlpha_vect = torch.linspace(0,1,1500)       # vector of alphas\nx_vect = torch.linspace(0,L,2000)           # vector of x\n\n\nFunction = 'Heaviside'                      # Alpha-parameterised step function\nFunction = 'Tanh'                           # smooth alpha-parameterised step function\n# Function = 'Gauss'                        # Alpha-parameterised front function\nFunction = 'Gauss_sum'                      # Double alpha-parameterised front functions\n\n\n\n\nif Function == 'Heaviside':\n    F = torch.heaviside((x_vect[:,None] - (1-Alpha_vect[None,:])*L), x_vect[-1]/x_vect[-1])\nelif Function == 'Tanh':\n    F = torch.tanh((x_vect[:,None] - (1-Alpha_vect[None,:])*L))\nelif Function == 'Gauss':\n    F = torch.exp(-(x_vect[:,None] - (1-Alpha_vect[None,:])*L)**2)\n\nelif Function == 'Gauss_sum':\n    F = torch.exp(-(x_vect[:,None] - (1-Alpha_vect[None,:])*L)**2) + torch.exp(-(x_vect[:,None] - (1-2*Alpha_vect[None,:])*L)**2) \n\n\n\n\nPlot the reference function\n\n\nCode\nplt.imshow(F.t(),cmap='gray')\nplt.title('Full field')\nplt.xlabel('x')\nplt.ylabel('\\alpha')\n# plt.savefig('../Results/FullField_'+Function+'.pdf', transparent=True)  \nplt.show()\n\n\n/Users/daby/anaconda3/lib/python3.11/site-packages/IPython/core/pylabtools.py:152: UserWarning:\n\nGlyph 7 (\u0007) missing from current font.\n\n\n\n\n\n\n\n\n\n\n\n\nCompute its SVD\n\n\nCode\nU, S, V = torch.svd(F)\n\n\n\n\nCompute the truncated function\n\n\nCode\nN = 15                                                  # Number of modes kept for the truncation                   \n\nF_truncated = U[:,:N]@torch.diag(S[:N])@V[:,:N].t()     # Truncated function\n\n\n\n\nPlot the truncated function\n\n\nCode\nplt.imshow(F_truncated.t(),cmap='gray')\nplt.title(f'Truncated field, N={N}')\nplt.xlabel('x')\nplt.ylabel('alpha')\n# plt.savefig(f'../Results/TruncatedField_{N}_'+Function+'.pdf', transparent=True)  \nplt.show()\n\n\n\n\n\n\n\n\n\n\n\nComparison\nThe truncated function and its reference are compared for two values * \\(\\alpha = 1/3\\) & * \\(\\alpha = 2/3\\).\n\n\nCode\nplt.plot(x_vect,F[:,1000],'k',label='Full, alpha = 2/3')\nplt.plot(x_vect,F_truncated[:,1000],'--',label='Truncated, alpha = 2/3')\nplt.plot(x_vect,F[:,500],'k',label='Full, alpha = 1/3')\nplt.plot(x_vect,F_truncated[:,500],'--',label='Truncated, alpha = 1/3')\nplt.legend(loc=\"upper left\")\nplt.title(f'2 slices of the field, N={N}')\nplt.xlabel('x')\nplt.ylabel('f(x,alpha)')\n# plt.savefig(f'../Results/Sliced_TruncatedField_{N}_'+Function+'.pdf', transparent=True)  \nplt.show()\n\n\n\n\n\n\n\n\n\n\n\nInteractive plot comparing the truncated function and the reference\nThis interactive plot allows to change the number of modes in the truncation and the value of the parameter \\(\\alpha\\) .\n\n\nCode\nplt.semilogy(S)\nplt.ylabel('sigma_i^2')\nplt.xlabel('Modes')\n# plt.savefig(f'../Results/SVD_Decay_'+Function+'.pdf', transparent=True)  \nplt.show()"
+  },
+  {
+    "objectID": "Autoencoder.html",
+    "href": "Autoencoder.html",
+    "title": "SVD",
+    "section": "",
+    "text": "Start by importing pytorch & matplotlib. I could not make the latex interpreter work in binder, so the corresponding lines are commented out.\n\n\nCode\nimport torch \nimport torch.nn as nn\nimport matplotlib.pyplot as plt\nplt.rcParams['svg.fonttype'] = 'none'\nfrom IPython.display import set_matplotlib_formats\nimport matplotlib\nimport numpy as np\n#%% matplotlib setup\nmatplotlib.rcParams[\"text.usetex\"] = True\nmatplotlib.rcParams[\"font.family\"] = \"serif\"\nmatplotlib.rcParams[\"font.size\"] = \"14\"\nmps_device = torch.device(\"mps\")"
+  },
+  {
+    "objectID": "Autoencoder.html#error-map",
+    "href": "Autoencoder.html#error-map",
+    "title": "SVD",
+    "section": "Error map",
+    "text": "Error map\n\n\nCode\nplt.imshow(F_reconstructed.cpu().data-F.t(),cmap='gray')\nplt.show()"
+  },
+  {
+    "objectID": "Autoencoder.html#errors-on-sliced-fields",
+    "href": "Autoencoder.html#errors-on-sliced-fields",
+    "title": "SVD",
+    "section": "Errors on sliced fields",
+    "text": "Errors on sliced fields\n\n\nCode\nidx1 = int(np.floor(0.66*F.shape[1]))\nidx2 = int(np.floor(0.33*F.shape[1]))\n\nplt.plot(x_vect,F[:,idx1],'k',label='Full, alpha = 2/3')\nplt.plot(x_vect,F_reconstructed.t()[:,idx1].cpu().data,'--',label='Truncated, alpha = 2/3')\nplt.plot(x_vect,F[:,idx2],'k',label='Full, alpha = 1/3')\nplt.plot(x_vect,F_reconstructed.t()[:,idx2].cpu().data,'--',label='Truncated, alpha = 1/3')\nplt.legend(loc=\"upper left\")\nplt.title(f'2 slices of the field')\nplt.xlabel(r'$x$')\nplt.ylabel(r'$f(x,\\alpha)$')\n# plt.savefig(f'Results/Sliced_TruncatedField_{N}_'+Function+'.pdf', transparent=True)  \nplt.show()"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "An SVD-Autoencoder comparison",
+    "section": "",
+    "text": "Welcome\nTo this statis website with jupyternotebooks"
+  }
+]

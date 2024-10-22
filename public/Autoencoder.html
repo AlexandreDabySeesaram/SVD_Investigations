@@ -1,0 +1,1500 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.56">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>SVD – A static jupyter’s book website</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">A static jupyter’s book website</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="./Autoencoder.html" aria-current="page"> 
+<span class="menu-text">Autoencoder</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./SVD.html"> 
+<span class="menu-text">SVD</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#import-libraries" id="toc-import-libraries" class="nav-link active" data-scroll-target="#import-libraries">Import libraries</a></li>
+  <li><a href="#create-the-functions" id="toc-create-the-functions" class="nav-link" data-scroll-target="#create-the-functions">Create the functions</a></li>
+  <li><a href="#define-the-autoencoder" id="toc-define-the-autoencoder" class="nav-link" data-scroll-target="#define-the-autoencoder">Define the autoencoder</a></li>
+  <li><a href="#compute-its-svd" id="toc-compute-its-svd" class="nav-link" data-scroll-target="#compute-its-svd">Compute its SVD</a></li>
+  <li><a href="#create-validation-and-training-sets" id="toc-create-validation-and-training-sets" class="nav-link" data-scroll-target="#create-validation-and-training-sets">Create validation and training sets</a></li>
+  <li><a href="#train-the-model" id="toc-train-the-model" class="nav-link" data-scroll-target="#train-the-model">Train the model</a></li>
+  <li><a href="#evaluate-the-model" id="toc-evaluate-the-model" class="nav-link" data-scroll-target="#evaluate-the-model">Evaluate the model</a></li>
+  <li><a href="#plots" id="toc-plots" class="nav-link" data-scroll-target="#plots">Plots</a></li>
+  <li><a href="#plot-the-comparison-of-the-latent-space-and-the-natural-parameter-used-to-generate-the-data" id="toc-plot-the-comparison-of-the-latent-space-and-the-natural-parameter-used-to-generate-the-data" class="nav-link" data-scroll-target="#plot-the-comparison-of-the-latent-space-and-the-natural-parameter-used-to-generate-the-data">Plot the comparison of the latent space and the natural parameter used to generate the data</a></li>
+  <li><a href="#plot-reconstructed-image" id="toc-plot-reconstructed-image" class="nav-link" data-scroll-target="#plot-reconstructed-image">Plot reconstructed image</a></li>
+  <li><a href="#plot-errors" id="toc-plot-errors" class="nav-link" data-scroll-target="#plot-errors">Plot errors</a>
+  <ul class="collapse">
+  <li><a href="#error-map" id="toc-error-map" class="nav-link" data-scroll-target="#error-map">Error map</a></li>
+  <li><a href="#errors-on-sliced-fields" id="toc-errors-on-sliced-fields" class="nav-link" data-scroll-target="#errors-on-sliced-fields">Errors on sliced fields</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content column-page-left" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">SVD</h1>
+</div>
+
+
+
+<div class="quarto-title-meta column-page-left">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="import-libraries" class="level1">
+<h1>Import libraries</h1>
+<p>Start by importing pytorch &amp; matplotlib. I could not make the latex interpreter work in binder, so the corresponding lines are commented out.</p>
+<div id="e822a863" class="cell" data-execution_count="1">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch </span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn <span class="im">as</span> nn</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>plt.rcParams[<span class="st">'svg.fonttype'</span>] <span class="op">=</span> <span class="st">'none'</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> IPython.display <span class="im">import</span> set_matplotlib_formats</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">#%% matplotlib setup</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>matplotlib.rcParams[<span class="st">"text.usetex"</span>] <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>matplotlib.rcParams[<span class="st">"font.family"</span>] <span class="op">=</span> <span class="st">"serif"</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>matplotlib.rcParams[<span class="st">"font.size"</span>] <span class="op">=</span> <span class="st">"14"</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>mps_device <span class="op">=</span> torch.device(<span class="st">"mps"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="create-the-functions" class="level1">
+<h1>Create the functions</h1>
+<p>The separability proprieties of several functions are investigated. This code first shows the separability proprieties of different ways of clustering the 1D space into two regions. Two types of functions are used to do so: * A sharp step function (Heaviside), * A smooth one (Tanh).</p>
+<p>In both cases the position of the jump is parametrised by a scalar parameter <span class="math inline">\(\alpha\)</span>.</p>
+<p>Furhter investigations are conducted on moving front(s) with a * A gaussian function that is moving * Two gaussian functions moving at different rates</p>
+<div id="640ac0ac" class="cell" data-execution_count="2">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>L <span class="op">=</span> <span class="dv">10</span>                                      <span class="co"># Space domain</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>Alpha_vect <span class="op">=</span> torch.linspace(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">100</span>)        <span class="co"># vector of alphas</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>x_vect <span class="op">=</span> torch.linspace(<span class="dv">0</span>,L,<span class="dv">2000</span>)           <span class="co"># vector of x</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>Function <span class="op">=</span> <span class="st">'Heaviside'</span>                      <span class="co"># Alpha-parameterised step function</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>Function <span class="op">=</span> <span class="st">'Tanh'</span>                           <span class="co"># smooth alpha-parameterised step function</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Function = 'Gauss'                        # Alpha-parameterised front function</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Function = 'Gauss_sum'                      # Double alpha-parameterised front functions</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> Function <span class="op">==</span> <span class="st">'Heaviside'</span>:</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    F <span class="op">=</span> torch.heaviside((x_vect[:,<span class="va">None</span>] <span class="op">-</span> (<span class="dv">1</span><span class="op">-</span>Alpha_vect[<span class="va">None</span>,:])<span class="op">*</span>L), x_vect[<span class="op">-</span><span class="dv">1</span>]<span class="op">/</span>x_vect[<span class="op">-</span><span class="dv">1</span>])</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="cf">elif</span> Function <span class="op">==</span> <span class="st">'Tanh'</span>:</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    F <span class="op">=</span> torch.tanh((x_vect[:,<span class="va">None</span>] <span class="op">-</span> (<span class="dv">1</span><span class="op">-</span>Alpha_vect[<span class="va">None</span>,:])<span class="op">*</span>L))</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="cf">elif</span> Function <span class="op">==</span> <span class="st">'Gauss'</span>:</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    F <span class="op">=</span> torch.exp(<span class="op">-</span>(x_vect[:,<span class="va">None</span>] <span class="op">-</span> (<span class="dv">1</span><span class="op">-</span>Alpha_vect[<span class="va">None</span>,:])<span class="op">*</span>L)<span class="op">**</span><span class="dv">2</span>)</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="cf">elif</span> Function <span class="op">==</span> <span class="st">'Gauss_sum'</span>:</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    F <span class="op">=</span> torch.exp(<span class="op">-</span>(x_vect[:,<span class="va">None</span>] <span class="op">-</span> (<span class="dv">1</span><span class="op">-</span>Alpha_vect[<span class="va">None</span>,:])<span class="op">*</span>L)<span class="op">**</span><span class="dv">2</span>) <span class="op">+</span> torch.exp(<span class="op">-</span>(x_vect[:,<span class="va">None</span>] <span class="op">-</span> (<span class="dv">1</span><span class="op">-</span><span class="dv">2</span><span class="op">*</span>Alpha_vect[<span class="va">None</span>,:])<span class="op">*</span>L)<span class="op">**</span><span class="dv">2</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="define-the-autoencoder" class="level1">
+<h1>Define the autoencoder</h1>
+<div id="3cfca754" class="cell" data-execution_count="3">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> AutoEncoder(nn.Module):</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>):</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>()</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.N_0 <span class="op">=</span> <span class="dv">2000</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.N_1 <span class="op">=</span> <span class="dv">1000</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.N_2 <span class="op">=</span> <span class="dv">200</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.N_3 <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.encoder <span class="op">=</span> nn.Sequential(</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>        nn.Linear(<span class="va">self</span>.N_0,<span class="va">self</span>.N_1),</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        nn.Tanh(),</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>        nn.Linear(<span class="va">self</span>.N_1, <span class="va">self</span>.N_2),</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>        nn.Tanh(),</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>        nn.Linear(<span class="va">self</span>.N_2, <span class="va">self</span>.N_3)</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.decoder <span class="op">=</span> nn.Sequential(</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>        nn.Linear(<span class="va">self</span>.N_3,<span class="va">self</span>.N_2),</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>        nn.ReLU(),</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>        nn.Linear(<span class="va">self</span>.N_2, <span class="va">self</span>.N_1),</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>        nn.ReLU(),</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>        nn.Linear(<span class="va">self</span>.N_1, <span class="va">self</span>.N_0)</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> forward(<span class="va">self</span>, x, role <span class="op">=</span> <span class="st">"decode"</span>):</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="va">self</span>.training:</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>            e <span class="op">=</span> <span class="va">self</span>.encoder(x)</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>            d <span class="op">=</span> <span class="va">self</span>.decoder(e)</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> d</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>            <span class="cf">match</span> role:</span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>                <span class="cf">case</span> <span class="st">"encode"</span>:</span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>                    e <span class="op">=</span> <span class="va">self</span>.encoder(x)</span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">return</span> e</span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>                <span class="cf">case</span> <span class="st">"decode"</span>:</span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>                    d <span class="op">=</span> <span class="va">self</span>.decoder(x)</span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">return</span> d</span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>ROM <span class="op">=</span> AutoEncoder()</span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>MSE <span class="op">=</span> nn.MSELoss()</span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>optimizer <span class="op">=</span> torch.optim.Adam(ROM.parameters(),</span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>                             lr <span class="op">=</span> <span class="fl">1e-3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="compute-its-svd" class="level1">
+<h1>Compute its SVD</h1>
+<div id="c0ef36be" class="cell" data-execution_count="4">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>U, S, V <span class="op">=</span> torch.svd(F)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="create-validation-and-training-sets" class="level1">
+<h1>Create validation and training sets</h1>
+<div id="010d98b4" class="cell" data-execution_count="5">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>n_epochs <span class="op">=</span> <span class="dv">400</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> random</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>val <span class="op">=</span> <span class="bu">int</span>(np.floor(<span class="fl">0.2</span><span class="op">*</span>F.shape[<span class="dv">1</span>]))</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>F_train <span class="op">=</span> F</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> n <span class="kw">in</span> <span class="bu">range</span>(val):</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> random.randint(<span class="dv">1</span>, F_train.shape[<span class="dv">1</span>]<span class="op">-</span><span class="dv">1</span>)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    F_val <span class="op">=</span> F_train[:,r]</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    F_train <span class="op">=</span> torch.cat([F_train[:, :r], F_train[:, r<span class="op">+</span><span class="dv">1</span>:]], dim<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>F_train <span class="op">=</span> F_train.T</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>F_val <span class="op">=</span> F_val.T</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>loss_t_vect <span class="op">=</span> []</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>loss_v_vect <span class="op">=</span> []</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>/var/folders/vt/tk0pvn6x7dj443pvlvkxzcj00000gn/T/ipykernel_50159/3940643703.py:11: UserWarning:
+
+The use of `x.T` on tensors of dimension other than 2 to reverse their shape is deprecated and it will throw an error in a future release. Consider `x.mT` to transpose batches of matrices or `x.permute(*torch.arange(x.ndim - 1, -1, -1))` to reverse the dimensions of a tensor. (Triggered internally at /private/var/folders/k1/30mswbxs7r1g6zwn8y4fyt500000gp/T/abs_5ae0635zuj/croot/pytorch-select_1700511177724/work/aten/src/ATen/native/TensorShape.cpp:3618.)
+</code></pre>
+</div>
+</div>
+</section>
+<section id="train-the-model" class="level1">
+<h1>Train the model</h1>
+<div id="319cdf85" class="cell" data-execution_count="6">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>ROM.train()</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>F_train <span class="op">=</span> F_train.to(mps_device)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>F_val <span class="op">=</span> F_val.to(mps_device)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>ROM.to(mps_device)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> epochs <span class="kw">in</span> <span class="bu">range</span>(n_epochs):</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    loss <span class="op">=</span> MSE(ROM(F_train),F_train)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    optimizer.zero_grad()</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    loss.backward()</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    optimizer.step()</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    loss_t_vect.append(loss.data)</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    loss_v_vect.append(MSE(ROM(F_val),F_val).data)</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f'epoch </span><span class="sc">{</span>epochs<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ss"> loss = </span><span class="sc">{</span>np<span class="sc">.</span>format_float_scientific(loss.item(), precision<span class="op">=</span><span class="dv">4</span>)<span class="sc">}</span><span class="ss">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>epoch 1 loss = 8.2272e-01
+epoch 2 loss = 7.4663e-01
+epoch 3 loss = 6.2246e-01
+epoch 4 loss = 4.5841e-01
+epoch 5 loss = 4.4994e-01
+epoch 6 loss = 3.3373e-01
+epoch 7 loss = 2.7725e-01
+epoch 8 loss = 2.5672e-01
+epoch 9 loss = 2.3141e-01
+epoch 10 loss = 2.2091e-01
+epoch 11 loss = 2.1549e-01
+epoch 12 loss = 1.9884e-01
+epoch 13 loss = 1.8581e-01
+epoch 14 loss = 1.8156e-01
+epoch 15 loss = 1.7375e-01
+epoch 16 loss = 1.6082e-01
+epoch 17 loss = 1.4838e-01
+epoch 18 loss = 1.3705e-01
+epoch 19 loss = 1.2268e-01
+epoch 20 loss = 1.1112e-01
+epoch 21 loss = 9.9780e-02
+epoch 22 loss = 8.7996e-02
+epoch 23 loss = 7.7653e-02
+epoch 24 loss = 7.0658e-02
+epoch 25 loss = 6.3033e-02
+epoch 26 loss = 5.7313e-02
+epoch 27 loss = 5.436e-02
+epoch 28 loss = 5.2625e-02
+epoch 29 loss = 5.1223e-02
+epoch 30 loss = 5.0106e-02
+epoch 31 loss = 4.9514e-02
+epoch 32 loss = 4.8433e-02
+epoch 33 loss = 4.6951e-02
+epoch 34 loss = 4.5541e-02
+epoch 35 loss = 4.4470e-02
+epoch 36 loss = 4.2168e-02
+epoch 37 loss = 3.9668e-02
+epoch 38 loss = 3.7747e-02
+epoch 39 loss = 3.6236e-02
+epoch 40 loss = 3.4740e-02
+epoch 41 loss = 3.3267e-02
+epoch 42 loss = 3.2065e-02
+epoch 43 loss = 3.0828e-02
+epoch 44 loss = 2.9735e-02
+epoch 45 loss = 2.8532e-02
+epoch 46 loss = 2.7103e-02
+epoch 47 loss = 2.5749e-02
+epoch 48 loss = 2.4271e-02
+epoch 49 loss = 2.2811e-02
+epoch 50 loss = 2.1560e-02
+epoch 51 loss = 2.0329e-02
+epoch 52 loss = 1.9237e-02
+epoch 53 loss = 1.8429e-02
+epoch 54 loss = 1.7669e-02
+epoch 55 loss = 1.6883e-02
+epoch 56 loss = 1.6255e-02
+epoch 57 loss = 1.5699e-02
+epoch 58 loss = 1.5112e-02
+epoch 59 loss = 1.4631e-02
+epoch 60 loss = 1.4228e-02
+epoch 61 loss = 1.3910e-02
+epoch 62 loss = 1.364e-02
+epoch 63 loss = 1.337e-02
+epoch 64 loss = 1.3106e-02
+epoch 65 loss = 1.2832e-02
+epoch 66 loss = 1.2557e-02
+epoch 67 loss = 1.2288e-02
+epoch 68 loss = 1.1996e-02
+epoch 69 loss = 1.1678e-02
+epoch 70 loss = 1.138e-02
+epoch 71 loss = 1.1078e-02
+epoch 72 loss = 1.0821e-02
+epoch 73 loss = 1.0675e-02
+epoch 74 loss = 1.0795e-02
+epoch 75 loss = 1.1622e-02
+epoch 76 loss = 1.3333e-02
+epoch 77 loss = 1.4258e-02
+epoch 78 loss = 1.1140e-02
+epoch 79 loss = 8.8548e-03
+epoch 80 loss = 1.0790e-02
+epoch 81 loss = 9.6953e-03
+epoch 82 loss = 8.2777e-03
+epoch 83 loss = 9.5681e-03
+epoch 84 loss = 7.9768e-03
+epoch 85 loss = 8.2919e-03
+epoch 86 loss = 8.1009e-03
+epoch 87 loss = 7.356e-03
+epoch 88 loss = 7.8659e-03
+epoch 89 loss = 6.8935e-03
+epoch 90 loss = 7.3773e-03
+epoch 91 loss = 6.6749e-03
+epoch 92 loss = 6.8466e-03
+epoch 93 loss = 6.5235e-03
+epoch 94 loss = 6.3763e-03
+epoch 95 loss = 6.3588e-03
+epoch 96 loss = 6.0122e-03
+epoch 97 loss = 6.1497e-03
+epoch 98 loss = 5.751e-03
+epoch 99 loss = 5.9041e-03
+epoch 100 loss = 5.5698e-03
+epoch 101 loss = 5.6401e-03
+epoch 102 loss = 5.4369e-03
+epoch 103 loss = 5.3788e-03
+epoch 104 loss = 5.3155e-03
+epoch 105 loss = 5.1577e-03
+epoch 106 loss = 5.1767e-03
+epoch 107 loss = 4.9824e-03
+epoch 108 loss = 5.0079e-03
+epoch 109 loss = 4.8489e-03
+epoch 110 loss = 4.8224e-03
+epoch 111 loss = 4.735e-03
+epoch 112 loss = 4.6425e-03
+epoch 113 loss = 4.6115e-03
+epoch 114 loss = 4.4875e-03
+epoch 115 loss = 4.4673e-03
+epoch 116 loss = 4.3588e-03
+epoch 117 loss = 4.3067e-03
+epoch 118 loss = 4.2407e-03
+epoch 119 loss = 4.1521e-03
+epoch 120 loss = 4.1123e-03
+epoch 121 loss = 4.0176e-03
+epoch 122 loss = 3.9698e-03
+epoch 123 loss = 3.8981e-03
+epoch 124 loss = 3.8268e-03
+epoch 125 loss = 3.7786e-03
+epoch 126 loss = 3.7004e-03
+epoch 127 loss = 3.6555e-03
+epoch 128 loss = 3.6028e-03
+epoch 129 loss = 3.5706e-03
+epoch 130 loss = 3.6047e-03
+epoch 131 loss = 3.7120e-03
+epoch 132 loss = 3.9934e-03
+epoch 133 loss = 4.2959e-03
+epoch 134 loss = 4.3508e-03
+epoch 135 loss = 3.6680e-03
+epoch 136 loss = 3.105e-03
+epoch 137 loss = 3.3217e-03
+epoch 138 loss = 3.4487e-03
+epoch 139 loss = 3.0164e-03
+epoch 140 loss = 2.9771e-03
+epoch 141 loss = 3.1202e-03
+epoch 142 loss = 2.8311e-03
+epoch 143 loss = 2.8074e-03
+epoch 144 loss = 2.8624e-03
+epoch 145 loss = 2.6425e-03
+epoch 146 loss = 2.6707e-03
+epoch 147 loss = 2.633e-03
+epoch 148 loss = 2.4904e-03
+epoch 149 loss = 2.5315e-03
+epoch 150 loss = 2.4320e-03
+epoch 151 loss = 2.374e-03
+epoch 152 loss = 2.3764e-03
+epoch 153 loss = 2.2722e-03
+epoch 154 loss = 2.2638e-03
+epoch 155 loss = 2.2182e-03
+epoch 156 loss = 2.1502e-03
+epoch 157 loss = 2.1463e-03
+epoch 158 loss = 2.0782e-03
+epoch 159 loss = 2.0465e-03
+epoch 160 loss = 2.0245e-03
+epoch 161 loss = 1.9615e-03
+epoch 162 loss = 1.9478e-03
+epoch 163 loss = 1.9085e-03
+epoch 164 loss = 1.8622e-03
+epoch 165 loss = 1.8501e-03
+epoch 166 loss = 1.8055e-03
+epoch 167 loss = 1.7735e-03
+epoch 168 loss = 1.7567e-03
+epoch 169 loss = 1.7142e-03
+epoch 170 loss = 1.6906e-03
+epoch 171 loss = 1.6689e-03
+epoch 172 loss = 1.6324e-03
+epoch 173 loss = 1.6123e-03
+epoch 174 loss = 1.5877e-03
+epoch 175 loss = 1.5575e-03
+epoch 176 loss = 1.5383e-03
+epoch 177 loss = 1.5131e-03
+epoch 178 loss = 1.4874e-03
+epoch 179 loss = 1.4685e-03
+epoch 180 loss = 1.4443e-03
+epoch 181 loss = 1.4216e-03
+epoch 182 loss = 1.4033e-03
+epoch 183 loss = 1.3802e-03
+epoch 184 loss = 1.3595e-03
+epoch 185 loss = 1.3419e-03
+epoch 186 loss = 1.3205e-03
+epoch 187 loss = 1.3008e-03
+epoch 188 loss = 1.2839e-03
+epoch 189 loss = 1.2644e-03
+epoch 190 loss = 1.2457e-03
+epoch 191 loss = 1.2293e-03
+epoch 192 loss = 1.2114e-03
+epoch 193 loss = 1.1938e-03
+epoch 194 loss = 1.1779e-03
+epoch 195 loss = 1.1613e-03
+epoch 196 loss = 1.1448e-03
+epoch 197 loss = 1.1296e-03
+epoch 198 loss = 1.1141e-03
+epoch 199 loss = 1.0985e-03
+epoch 200 loss = 1.0840e-03
+epoch 201 loss = 1.0696e-03
+epoch 202 loss = 1.0548e-03
+epoch 203 loss = 1.0409e-03
+epoch 204 loss = 1.0275e-03
+epoch 205 loss = 1.0138e-03
+epoch 206 loss = 1.0005e-03
+epoch 207 loss = 9.8781e-04
+epoch 208 loss = 9.7509e-04
+epoch 209 loss = 9.6251e-04
+epoch 210 loss = 9.5049e-04
+epoch 211 loss = 9.3867e-04
+epoch 212 loss = 9.268e-04
+epoch 213 loss = 9.1535e-04
+epoch 214 loss = 9.043e-04
+epoch 215 loss = 8.933e-04
+epoch 216 loss = 8.824e-04
+epoch 217 loss = 8.7186e-04
+epoch 218 loss = 8.6155e-04
+epoch 219 loss = 8.5137e-04
+epoch 220 loss = 8.4137e-04
+epoch 221 loss = 8.3158e-04
+epoch 222 loss = 8.2203e-04
+epoch 223 loss = 8.1266e-04
+epoch 224 loss = 8.0343e-04
+epoch 225 loss = 7.9439e-04
+epoch 226 loss = 7.8552e-04
+epoch 227 loss = 7.7678e-04
+epoch 228 loss = 7.6820e-04
+epoch 229 loss = 7.5978e-04
+epoch 230 loss = 7.5152e-04
+epoch 231 loss = 7.434e-04
+epoch 232 loss = 7.3540e-04
+epoch 233 loss = 7.2752e-04
+epoch 234 loss = 7.1981e-04
+epoch 235 loss = 7.1222e-04
+epoch 236 loss = 7.0473e-04
+epoch 237 loss = 6.9735e-04
+epoch 238 loss = 6.9012e-04
+epoch 239 loss = 6.8299e-04
+epoch 240 loss = 6.7595e-04
+epoch 241 loss = 6.6904e-04
+epoch 242 loss = 6.6222e-04
+epoch 243 loss = 6.5549e-04
+epoch 244 loss = 6.4886e-04
+epoch 245 loss = 6.4235e-04
+epoch 246 loss = 6.3591e-04
+epoch 247 loss = 6.2961e-04
+epoch 248 loss = 6.2343e-04
+epoch 249 loss = 6.1733e-04
+epoch 250 loss = 6.1134e-04
+epoch 251 loss = 6.0548e-04
+epoch 252 loss = 5.9979e-04
+epoch 253 loss = 5.9436e-04
+epoch 254 loss = 5.8929e-04
+epoch 255 loss = 5.8497e-04
+epoch 256 loss = 5.8177e-04
+epoch 257 loss = 5.8072e-04
+epoch 258 loss = 5.8360e-04
+epoch 259 loss = 5.9499e-04
+epoch 260 loss = 6.2315e-04
+epoch 261 loss = 6.8706e-04
+epoch 262 loss = 8.2237e-04
+epoch 263 loss = 1.1023e-03
+epoch 264 loss = 1.6474e-03
+epoch 265 loss = 2.5685e-03
+epoch 266 loss = 3.7967e-03
+epoch 267 loss = 4.2576e-03
+epoch 268 loss = 2.8522e-03
+epoch 269 loss = 8.2726e-04
+epoch 270 loss = 9.4509e-04
+epoch 271 loss = 2.0987e-03
+epoch 272 loss = 1.3997e-03
+epoch 273 loss = 5.6293e-04
+epoch 274 loss = 1.3574e-03
+epoch 275 loss = 1.2338e-03
+epoch 276 loss = 5.2688e-04
+epoch 277 loss = 1.0481e-03
+epoch 278 loss = 1.008e-03
+epoch 279 loss = 5.0735e-04
+epoch 280 loss = 8.8226e-04
+epoch 281 loss = 8.107e-04
+epoch 282 loss = 4.8835e-04
+epoch 283 loss = 7.8976e-04
+epoch 284 loss = 6.7168e-04
+epoch 285 loss = 4.7031e-04
+epoch 286 loss = 7.0593e-04
+epoch 287 loss = 5.8243e-04
+epoch 288 loss = 4.6516e-04
+epoch 289 loss = 6.3183e-04
+epoch 290 loss = 5.1563e-04
+epoch 291 loss = 4.5359e-04
+epoch 292 loss = 5.7358e-04
+epoch 293 loss = 4.739e-04
+epoch 294 loss = 4.4200e-04
+epoch 295 loss = 5.2313e-04
+epoch 296 loss = 4.4135e-04
+epoch 297 loss = 4.3230e-04
+epoch 298 loss = 4.8475e-04
+epoch 299 loss = 4.1819e-04
+epoch 300 loss = 4.1928e-04
+epoch 301 loss = 4.5153e-04
+epoch 302 loss = 4.0031e-04
+epoch 303 loss = 4.0802e-04
+epoch 304 loss = 4.2607e-04
+epoch 305 loss = 3.8608e-04
+epoch 306 loss = 3.9452e-04
+epoch 307 loss = 4.0465e-04
+epoch 308 loss = 3.7487e-04
+epoch 309 loss = 3.8261e-04
+epoch 310 loss = 3.8765e-04
+epoch 311 loss = 3.6444e-04
+epoch 312 loss = 3.6995e-04
+epoch 313 loss = 3.7234e-04
+epoch 314 loss = 3.5499e-04
+epoch 315 loss = 3.586e-04
+epoch 316 loss = 3.5978e-04
+epoch 317 loss = 3.4618e-04
+epoch 318 loss = 3.4766e-04
+epoch 319 loss = 3.4828e-04
+epoch 320 loss = 3.3759e-04
+epoch 321 loss = 3.3751e-04
+epoch 322 loss = 3.3814e-04
+epoch 323 loss = 3.2973e-04
+epoch 324 loss = 3.2797e-04
+epoch 325 loss = 3.2852e-04
+epoch 326 loss = 3.2200e-04
+epoch 327 loss = 3.1907e-04
+epoch 328 loss = 3.1938e-04
+epoch 329 loss = 3.1463e-04
+epoch 330 loss = 3.1092e-04
+epoch 331 loss = 3.1075e-04
+epoch 332 loss = 3.0749e-04
+epoch 333 loss = 3.0343e-04
+epoch 334 loss = 3.0248e-04
+epoch 335 loss = 3.0042e-04
+epoch 336 loss = 2.9653e-04
+epoch 337 loss = 2.9467e-04
+epoch 338 loss = 2.9326e-04
+epoch 339 loss = 2.9004e-04
+epoch 340 loss = 2.8750e-04
+epoch 341 loss = 2.8614e-04
+epoch 342 loss = 2.8375e-04
+epoch 343 loss = 2.8091e-04
+epoch 344 loss = 2.7918e-04
+epoch 345 loss = 2.7739e-04
+epoch 346 loss = 2.7480e-04
+epoch 347 loss = 2.7265e-04
+epoch 348 loss = 2.7101e-04
+epoch 349 loss = 2.6892e-04
+epoch 350 loss = 2.6666e-04
+epoch 351 loss = 2.6491e-04
+epoch 352 loss = 2.6325e-04
+epoch 353 loss = 2.6125e-04
+epoch 354 loss = 2.5954e-04
+epoch 355 loss = 2.5834e-04
+epoch 356 loss = 2.5742e-04
+epoch 357 loss = 2.5699e-04
+epoch 358 loss = 2.5816e-04
+epoch 359 loss = 2.6137e-04
+epoch 360 loss = 2.6819e-04
+epoch 361 loss = 2.8188e-04
+epoch 362 loss = 3.0903e-04
+epoch 363 loss = 3.6230e-04
+epoch 364 loss = 4.5901e-04
+epoch 365 loss = 6.3978e-04
+epoch 366 loss = 8.9122e-04
+epoch 367 loss = 1.2548e-03
+epoch 368 loss = 1.4136e-03
+epoch 369 loss = 1.3617e-03
+epoch 370 loss = 7.7275e-04
+epoch 371 loss = 2.8625e-04
+epoch 372 loss = 3.5093e-04
+epoch 373 loss = 6.7074e-04
+epoch 374 loss = 6.3425e-04
+epoch 375 loss = 3.0669e-04
+epoch 376 loss = 2.9545e-04
+epoch 377 loss = 4.9474e-04
+epoch 378 loss = 4.2317e-04
+epoch 379 loss = 2.5663e-04
+epoch 380 loss = 3.1630e-04
+epoch 381 loss = 3.8502e-04
+epoch 382 loss = 2.9646e-04
+epoch 383 loss = 2.5652e-04
+epoch 384 loss = 3.0681e-04
+epoch 385 loss = 2.9165e-04
+epoch 386 loss = 2.5387e-04
+epoch 387 loss = 2.6476e-04
+epoch 388 loss = 2.5950e-04
+epoch 389 loss = 2.4166e-04
+epoch 390 loss = 2.5238e-04
+epoch 391 loss = 2.422e-04
+epoch 392 loss = 2.1872e-04
+epoch 393 loss = 2.3441e-04
+epoch 394 loss = 2.4106e-04
+epoch 395 loss = 2.1016e-04
+epoch 396 loss = 2.0709e-04
+epoch 397 loss = 2.3018e-04
+epoch 398 loss = 2.1698e-04
+epoch 399 loss = 1.9407e-04
+epoch 400 loss = 2.0564e-04</code></pre>
+</div>
+</div>
+</section>
+<section id="evaluate-the-model" class="level1">
+<h1>Evaluate the model</h1>
+<div id="2b7f7aa4" class="cell" data-execution_count="7">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>ROM.<span class="bu">eval</span>()</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>F_train <span class="op">=</span> F_train.cpu()</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>F_val <span class="op">=</span> F_val.cpu()</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>ROM.cpu()</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>torch.save(ROM, <span class="st">'FullModel.pt'</span>) <span class="co"># to save a full coarse model</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="plots" class="level1">
+<h1>Plots</h1>
+<div id="e8f84762" class="cell" data-execution_count="8">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>loss_t_vect <span class="op">=</span> [loss_t.cpu() <span class="cf">for</span> loss_t <span class="kw">in</span> loss_t_vect]</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>loss_v_vect <span class="op">=</span> [loss_v.cpu() <span class="cf">for</span> loss_v <span class="kw">in</span> loss_v_vect]</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>plt.plot(loss_t_vect,label <span class="op">=</span> <span class="st">'training set'</span>)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>plt.plot(loss_v_vect,label <span class="op">=</span> <span class="st">'validation set'</span>)</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>plt.legend(loc<span class="op">=</span><span class="st">"upper right"</span>)</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>plt.semilogy(loss_t_vect,label <span class="op">=</span> <span class="st">'training set'</span>)</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>plt.semilogy(loss_v_vect,label <span class="op">=</span> <span class="st">'validation set'</span>)</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>plt.legend(loc<span class="op">=</span><span class="st">"upper right"</span>)</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Epochs'</span>)</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Loss'</span>)</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="co"># plt.savefig(f'Results/loss_training_'+Function+'.pdf', transparent=True)  </span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Autoencoder_files/figure-html/cell-9-output-1.png" width="573" height="415" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Autoencoder_files/figure-html/cell-9-output-2.png" width="585" height="437" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="plot-the-comparison-of-the-latent-space-and-the-natural-parameter-used-to-generate-the-data" class="level1">
+<h1>Plot the comparison of the latent space and the natural parameter used to generate the data</h1>
+<div id="25ee9203" class="cell" data-execution_count="9">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>Alpha_latent <span class="op">=</span> ROM(F.t(),<span class="st">"encode"</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>plt.plot(Alpha_vect.view(<span class="op">-</span><span class="dv">1</span>,<span class="dv">1</span>).cpu().data,Alpha_latent.view(<span class="op">-</span><span class="dv">1</span>,<span class="dv">1</span>).cpu().data)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="vs">r'$\alpha$'</span>)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="vs">r'$\hat{\alpha}$'</span>)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Autoencoder_files/figure-html/cell-10-output-1.png" width="595" height="437" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="plot-reconstructed-image" class="level1">
+<h1>Plot reconstructed image</h1>
+<div id="24dc1317" class="cell" data-execution_count="10">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>F_reconstructed <span class="op">=</span> ROM(Alpha_latent.view(<span class="op">-</span><span class="dv">1</span>,<span class="dv">1</span>))</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co"># F_reconstructed = ROM(Alpha_vect.view(-1,1))</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>plt.imshow(F_reconstructed.cpu().data,cmap<span class="op">=</span><span class="st">'gray'</span>)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Autoencoder_files/figure-html/cell-11-output-1.png" width="568" height="77" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="plot-errors" class="level1">
+<h1>Plot errors</h1>
+<section id="error-map" class="level2">
+<h2 class="anchored" data-anchor-id="error-map">Error map</h2>
+<div id="4178e6ae" class="cell" data-execution_count="11">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>plt.imshow(F_reconstructed.cpu().data<span class="op">-</span>F.t(),cmap<span class="op">=</span><span class="st">'gray'</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Autoencoder_files/figure-html/cell-12-output-1.png" width="568" height="77" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="errors-on-sliced-fields" class="level2">
+<h2 class="anchored" data-anchor-id="errors-on-sliced-fields">Errors on sliced fields</h2>
+<div id="46010a11" class="cell" data-execution_count="12">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>idx1 <span class="op">=</span> <span class="bu">int</span>(np.floor(<span class="fl">0.66</span><span class="op">*</span>F.shape[<span class="dv">1</span>]))</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>idx2 <span class="op">=</span> <span class="bu">int</span>(np.floor(<span class="fl">0.33</span><span class="op">*</span>F.shape[<span class="dv">1</span>]))</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>plt.plot(x_vect,F[:,idx1],<span class="st">'k'</span>,label<span class="op">=</span><span class="st">'Full, alpha = 2/3'</span>)</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>plt.plot(x_vect,F_reconstructed.t()[:,idx1].cpu().data,<span class="st">'--'</span>,label<span class="op">=</span><span class="st">'Truncated, alpha = 2/3'</span>)</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>plt.plot(x_vect,F[:,idx2],<span class="st">'k'</span>,label<span class="op">=</span><span class="st">'Full, alpha = 1/3'</span>)</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>plt.plot(x_vect,F_reconstructed.t()[:,idx2].cpu().data,<span class="st">'--'</span>,label<span class="op">=</span><span class="st">'Truncated, alpha = 1/3'</span>)</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>plt.legend(loc<span class="op">=</span><span class="st">"upper left"</span>)</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="ss">f'2 slices of the field'</span>)</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="vs">r'$x$'</span>)</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="vs">r'$f(x,\alpha)$'</span>)</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a><span class="co"># plt.savefig(f'Results/Sliced_TruncatedField_{N}_'+Function+'.pdf', transparent=True)  </span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Autoencoder_files/figure-html/cell-13-output-1.png" width="620" height="460" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+    let newTheme = '';
+    if(darkModeDefault) {
+      newTheme = isAlternate ? baseTheme : alternateTheme;
+    } else {
+      newTheme = isAlternate ? alternateTheme : baseTheme;
+    }
+    const changeGiscusTheme = () => {
+      // From: https://github.com/giscus/giscus/issues/336
+      const sendMessage = (message) => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+      }
+      sendMessage({
+        setConfig: {
+          theme: newTheme
+        }
+      });
+    }
+    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+    if (isGiscussLoaded) {
+      changeGiscusTheme();
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  const darkModeDefault = false;
+  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+    toggleGiscusIfUsed(toAlternate, darkModeDefault);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

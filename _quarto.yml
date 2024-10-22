@@ -1,0 +1,29 @@
+execute:
+  freeze: auto
+project:
+  resources:
+    - "Resources"
+  type: website
+  output-dir: public
+website:
+  title: "A static jupyter's book website"
+  description: "SVD and autoencoder"
+  navbar:
+    right:
+      - href: index.qmd
+        text: Home
+      - href: Autoencoder.qmd
+        text: Autoencoder
+      - href: SVD.qmd
+        text: SVD
+
+format:
+  html:
+    theme:
+      light: flatly
+      dark: darkly
+    css: styles.css
+    toc: true
+
+
+
