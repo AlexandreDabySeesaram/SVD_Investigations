@@ -26,7 +26,7 @@ x_vect = torch.linspace(0,L,2000)           # vector of x
 Function = 'Heaviside'                      # Alpha-parameterised step function
 Function = 'Tanh'                           # smooth alpha-parameterised step function
 # Function = 'Gauss'                        # Alpha-parameterised front function
-Function = 'Gauss_sum'                      # Double alpha-parameterised front functions
+# Function = 'Gauss_sum'                      # Double alpha-parameterised front functions
 
 
 
@@ -102,8 +102,9 @@ def interactive_plot(N,alpha):
     F_truncated = U[:,:N]@torch.diag(S[:N])@V[:,:N].t()
 
     # Plot the function
-    plt.plot(x_vect,F[:,alpha])
-    plt.plot(x_vect,F_truncated[:,alpha])
+    plt.plot(x_vect,F[:,alpha], label='Reference')
+    plt.plot(x_vect,F_truncated[:,alpha], label='Truncated SVD')
+    plt.legend(['Reference', 'Truncated SVD'])
     plt.show()
 
 # Create an interactive slider

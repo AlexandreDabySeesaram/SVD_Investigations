@@ -105,6 +105,9 @@ ROM.train()
 F_train = F_train.to(mps_device)
 F_val = F_val.to(mps_device)
 ROM.to(mps_device)
+import time
+t0 = time.time()
+
 for epochs in range(n_epochs):
     loss = MSE(ROM(F_train),F_train)
     optimizer.zero_grad()
@@ -114,6 +117,9 @@ for epochs in range(n_epochs):
     loss_v_vect.append(MSE(ROM(F_val),F_val).data)
     print(f'epoch {epochs+1} loss = {np.format_float_scientific(loss.item(), precision=4)}')
 
+tf = time.time()
+
+print(f'duration (s) {tf-t0}')
 #%% eval
 ROM.eval()
 
