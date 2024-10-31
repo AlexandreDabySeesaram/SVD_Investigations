@@ -15,7 +15,7 @@ format:
 
 # Welcome
 
-To this statis website with jupyternotebooks
+To this statis website with jupyternotebooks.
 
 
 

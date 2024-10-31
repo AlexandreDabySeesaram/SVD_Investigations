@@ -9,15 +9,16 @@ website:
   title: "A static jupyter's book website"
   description: "SVD and autoencoder"
   navbar:
-    right:
-      - href: index.qmd
-        text: Home
+    left: 
       - href: Autoencoder.qmd
         text: Autoencoder
       - href: SVD.qmd
         text: SVD
-
+    right:
+      - href: https://alexandredabyseesaram.github.io/
+        text: Alexandre Daby-Seesaram's homepage
 format:
+  pdf: default
   html:
     theme:
       light: flatly
