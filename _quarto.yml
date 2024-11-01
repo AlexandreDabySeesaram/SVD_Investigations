@@ -3,6 +3,7 @@ execute:
 project:
   resources:
     - "Resources"
+    - "style_site.scss"
   type: website
   output-dir: public
 website:
@@ -21,7 +22,7 @@ format:
   pdf: default
   html:
     theme:
-      light: flatly
+      light: [flatly, style_site.scss]
       dark: darkly
     css: styles.css
     toc: true
