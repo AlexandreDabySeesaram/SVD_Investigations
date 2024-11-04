@@ -16,22 +16,22 @@
   {
     "objectID": "Autoencoder.html",
     "href": "Autoencoder.html",
-    "title": "SVD",
+    "title": "Autoencoder",
     "section": "",
     "text": "Start by importing pytorch & matplotlib. I could not make the latex interpreter work in binder, so the corresponding lines are commented out.\n\n\nCode\nimport torch \nimport torch.nn as nn\nimport matplotlib.pyplot as plt\nplt.rcParams['svg.fonttype'] = 'none'\nfrom IPython.display import set_matplotlib_formats\nimport matplotlib\nimport numpy as np\n#%% matplotlib setup\nmatplotlib.rcParams[\"text.usetex\"] = True\nmatplotlib.rcParams[\"font.family\"] = \"serif\"\nmatplotlib.rcParams[\"font.size\"] = \"14\"\nmps_device = torch.device(\"mps\")"
   },
   {
     "objectID": "Autoencoder.html#error-map",
     "href": "Autoencoder.html#error-map",
-    "title": "SVD",
+    "title": "Autoencoder",
     "section": "Error map",
     "text": "Error map\n\n\nCode\nplt.imshow(F_reconstructed.cpu().data-F.t(),cmap='gray')\nplt.show()"
   },
   {
     "objectID": "Autoencoder.html#errors-on-sliced-fields",
     "href": "Autoencoder.html#errors-on-sliced-fields",
-    "title": "SVD",
+    "title": "Autoencoder",
     "section": "Errors on sliced fields",
-    "text": "Errors on sliced fields\nThe trained model and the reference are compared for two values * \\(\\alpha = 1/3\\) & * \\(\\alpha = 2/3\\).\n\n\nCode\nidx1 = int(np.floor(0.66*F.shape[1]))\nidx2 = int(np.floor(0.33*F.shape[1]))\n\nplt.plot(x_vect,F[:,idx1],'k',label='Full, alpha = 2/3')\nplt.plot(x_vect,F_reconstructed.t()[:,idx1].cpu().data,'--',label='Truncated, alpha = 2/3')\nplt.plot(x_vect,F[:,idx2],'k',label='Full, alpha = 1/3')\nplt.plot(x_vect,F_reconstructed.t()[:,idx2].cpu().data,'--',label='Truncated, alpha = 1/3')\nplt.legend(loc=\"upper left\")\nplt.title(f'2 slices of the field')\nplt.xlabel(r'$x$')\nplt.ylabel(r'$f(x,\\alpha)$')\n# plt.savefig(f'Results/Sliced_TruncatedField_{N}_'+Function+'.pdf', transparent=True)  \nplt.show()"
+    "text": "Errors on sliced fields\nThe trained model and the reference are compared for two values\n\n\\(\\alpha = 1/3\\) &\n\\(\\alpha = 2/3\\).\n\n\n\nCode\nidx1 = int(np.floor(0.66*F.shape[1]))\nidx2 = int(np.floor(0.33*F.shape[1]))\n\nplt.plot(x_vect,F[:,idx1],'k',label='Full, alpha = 2/3')\nplt.plot(x_vect,F_reconstructed.t()[:,idx1].cpu().data,'--',label='Truncated, alpha = 2/3')\nplt.plot(x_vect,F[:,idx2],'k',label='Full, alpha = 1/3')\nplt.plot(x_vect,F_reconstructed.t()[:,idx2].cpu().data,'--',label='Truncated, alpha = 1/3')\nplt.legend(loc=\"upper left\")\nplt.title(f'2 slices of the field')\nplt.xlabel(r'$x$')\nplt.ylabel(r'$f(x,\\alpha)$')\n# plt.savefig(f'Results/Sliced_TruncatedField_{N}_'+Function+'.pdf', transparent=True)  \nplt.show()\n\n\n\n\n\n\n\n\n\nWith only one latent space-parameter the error are reasonably low. Using non-linear interpolation is more appropriate when the separability is low unsing linear subspaces."
   }
 ]
