@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>SVD – A static jupyter’s book website</title>
+<title>Autoencoder – A static jupyter’s book website</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -187,7 +187,6 @@ window.Quarto = {
   <li><a href="#import-libraries" id="toc-import-libraries" class="nav-link active" data-scroll-target="#import-libraries">Import libraries</a></li>
   <li><a href="#create-the-functions" id="toc-create-the-functions" class="nav-link" data-scroll-target="#create-the-functions">Create the functions</a></li>
   <li><a href="#define-the-autoencoder" id="toc-define-the-autoencoder" class="nav-link" data-scroll-target="#define-the-autoencoder">Define the autoencoder</a></li>
-  <li><a href="#compute-its-svd" id="toc-compute-its-svd" class="nav-link" data-scroll-target="#compute-its-svd">Compute its SVD</a></li>
   <li><a href="#create-validation-and-training-sets" id="toc-create-validation-and-training-sets" class="nav-link" data-scroll-target="#create-validation-and-training-sets">Create validation and training sets</a></li>
   <li><a href="#train-the-model" id="toc-train-the-model" class="nav-link" data-scroll-target="#train-the-model">Train the model</a></li>
   <li><a href="#evaluate-the-model" id="toc-evaluate-the-model" class="nav-link" data-scroll-target="#evaluate-the-model">Evaluate the model</a></li>
@@ -207,7 +206,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">SVD</h1>
+<h1 class="title">Autoencoder</h1>
 </div>
 
 
@@ -227,7 +226,7 @@ window.Quarto = {
 <section id="import-libraries" class="level1">
 <h1>Import libraries</h1>
 <p>Start by importing pytorch &amp; matplotlib. I could not make the latex interpreter work in binder, so the corresponding lines are commented out.</p>
-<div id="81ba4d00" class="cell" data-execution_count="1">
+<div id="cf8b4ae2" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch </span>
@@ -247,10 +246,18 @@ window.Quarto = {
 </section>
 <section id="create-the-functions" class="level1">
 <h1>Create the functions</h1>
-<p>The separability proprieties of several functions are investigated. This code first shows the separability proprieties of different ways of clustering the 1D space into two regions. Two types of functions are used to do so: * A sharp step function (Heaviside), * A smooth one (Tanh).</p>
+<p>The separability proprieties of several functions are investigated. This code first shows the separability proprieties of different ways of clustering the 1D space into two regions. Two types of functions are used to do so:</p>
+<ul>
+<li>A sharp step function (Heaviside),</li>
+<li>A smooth one (Tanh).</li>
+</ul>
 <p>In both cases the position of the jump is parametrised by a scalar parameter <span class="math inline">\(\alpha\)</span>.</p>
-<p>Furhter investigations are conducted on moving front(s) with a * A gaussian function that is moving * Two gaussian functions moving at different rates</p>
-<div id="1bb0fe59" class="cell" data-execution_count="2">
+<p>Furhter investigations are conducted on moving front(s) with a</p>
+<ul>
+<li>A gaussian function that is moving</li>
+<li>Two gaussian functions moving at different rates</li>
+</ul>
+<div id="793d7b0a" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>L <span class="op">=</span> <span class="dv">10</span>                                      <span class="co"># Space domain</span></span>
@@ -280,7 +287,8 @@ window.Quarto = {
 </section>
 <section id="define-the-autoencoder" class="level1">
 <h1>Define the autoencoder</h1>
-<div id="49fd49c7" class="cell" data-execution_count="3">
+<p>We know that the parametrised field is (non-linearly) parametrised with a single parameter. The SVD required approximatively <span class="math inline">\(15\)</span> modes to reprensent the field. We propose to create an autoencoder with a single parameter in the latent space. <em>i.e.</em> <span class="math inline">\(N_3=1\)</span>, to see how the non-linear interpolation can retrive the single parameter dependency of the function.</p>
+<div id="39f301a5" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> AutoEncoder(nn.Module):</span>
@@ -328,447 +336,444 @@ window.Quarto = {
 </details>
 </div>
 </section>
-<section id="compute-its-svd" class="level1">
-<h1>Compute its SVD</h1>
-<div id="c0f775bb" class="cell" data-execution_count="4">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>U, S, V <span class="op">=</span> torch.svd(F)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
-</section>
 <section id="create-validation-and-training-sets" class="level1">
 <h1>Create validation and training sets</h1>
-<div id="03919407" class="cell" data-execution_count="5">
+<div id="74c30f7a" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>n_epochs <span class="op">=</span> <span class="dv">400</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> random</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>val <span class="op">=</span> <span class="bu">int</span>(np.floor(<span class="fl">0.2</span><span class="op">*</span>F.shape[<span class="dv">1</span>]))</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>F_train <span class="op">=</span> F</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> n <span class="kw">in</span> <span class="bu">range</span>(val):</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> random.randint(<span class="dv">1</span>, F_train.shape[<span class="dv">1</span>]<span class="op">-</span><span class="dv">1</span>)</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    F_val <span class="op">=</span> F_train[:,r]</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    F_train <span class="op">=</span> torch.cat([F_train[:, :r], F_train[:, r<span class="op">+</span><span class="dv">1</span>:]], dim<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>F_train <span class="op">=</span> F_train.T</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>F_val <span class="op">=</span> F_val.T</span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>loss_t_vect <span class="op">=</span> []</span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>loss_v_vect <span class="op">=</span> []</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>n_epochs <span class="op">=</span> <span class="dv">400</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> random</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>val <span class="op">=</span> <span class="bu">int</span>(np.floor(<span class="fl">0.2</span><span class="op">*</span>F.shape[<span class="dv">1</span>]))</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>F_train <span class="op">=</span> F</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> n <span class="kw">in</span> <span class="bu">range</span>(val):</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> random.randint(<span class="dv">1</span>, F_train.shape[<span class="dv">1</span>]<span class="op">-</span><span class="dv">1</span>)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    F_val <span class="op">=</span> F_train[:,r]</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    F_train <span class="op">=</span> torch.cat([F_train[:, :r], F_train[:, r<span class="op">+</span><span class="dv">1</span>:]], dim<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>F_train <span class="op">=</span> F_train.T</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>F_val <span class="op">=</span> F_val.T</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>loss_t_vect <span class="op">=</span> []</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>loss_v_vect <span class="op">=</span> []</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
+<div class="cell-output cell-output-stderr">
+<pre><code>/var/folders/vt/tk0pvn6x7dj443pvlvkxzcj00000gn/T/ipykernel_95795/3940643703.py:11: UserWarning:
+
+The use of `x.T` on tensors of dimension other than 2 to reverse their shape is deprecated and it will throw an error in a future release. Consider `x.mT` to transpose batches of matrices or `x.permute(*torch.arange(x.ndim - 1, -1, -1))` to reverse the dimensions of a tensor. (Triggered internally at /private/var/folders/k1/30mswbxs7r1g6zwn8y4fyt500000gp/T/abs_5ae0635zuj/croot/pytorch-select_1700511177724/work/aten/src/ATen/native/TensorShape.cpp:3618.)
+</code></pre>
+</div>
 </div>
 </section>
 <section id="train-the-model" class="level1">
 <h1>Train the model</h1>
-<div id="943bb924" class="cell" data-execution_count="6">
+<div id="6b3dffb6" class="cell" data-execution_count="5">
 <div class="cell-output cell-output-stdout">
-<pre><code>epoch 1 loss = 8.2707e-01
-epoch 2 loss = 7.7308e-01
-epoch 3 loss = 6.5307e-01
-epoch 4 loss = 5.0904e-01
-epoch 5 loss = 5.3307e-01
-epoch 6 loss = 4.2883e-01
-epoch 7 loss = 3.4335e-01
-epoch 8 loss = 2.9456e-01
-epoch 9 loss = 2.7804e-01
-epoch 10 loss = 2.3397e-01
-epoch 11 loss = 2.0418e-01
-epoch 12 loss = 2.0378e-01
-epoch 13 loss = 2.0612e-01
-epoch 14 loss = 1.9357e-01
-epoch 15 loss = 1.7878e-01
-epoch 16 loss = 1.7355e-01
-epoch 17 loss = 1.7137e-01
-epoch 18 loss = 1.6306e-01
-epoch 19 loss = 1.5118e-01
-epoch 20 loss = 1.4067e-01
-epoch 21 loss = 1.3165e-01
-epoch 22 loss = 1.2368e-01
-epoch 23 loss = 1.1288e-01
-epoch 24 loss = 1.0205e-01
-epoch 25 loss = 9.2533e-02
-epoch 26 loss = 8.1176e-02
-epoch 27 loss = 7.2025e-02
-epoch 28 loss = 6.5273e-02
-epoch 29 loss = 5.9735e-02
-epoch 30 loss = 5.481e-02
-epoch 31 loss = 5.1177e-02
-epoch 32 loss = 4.9397e-02
-epoch 33 loss = 4.7762e-02
-epoch 34 loss = 4.6258e-02
-epoch 35 loss = 4.4727e-02
-epoch 36 loss = 4.3542e-02
-epoch 37 loss = 4.1734e-02
-epoch 38 loss = 3.9324e-02
-epoch 39 loss = 3.7209e-02
-epoch 40 loss = 3.516e-02
-epoch 41 loss = 3.2950e-02
-epoch 42 loss = 3.0697e-02
-epoch 43 loss = 2.8854e-02
-epoch 44 loss = 2.7152e-02
-epoch 45 loss = 2.5683e-02
-epoch 46 loss = 2.4330e-02
-epoch 47 loss = 2.3079e-02
-epoch 48 loss = 2.179e-02
-epoch 49 loss = 2.0484e-02
-epoch 50 loss = 1.9277e-02
-epoch 51 loss = 1.8183e-02
-epoch 52 loss = 1.713e-02
-epoch 53 loss = 1.618e-02
-epoch 54 loss = 1.5544e-02
-epoch 55 loss = 1.4968e-02
-epoch 56 loss = 1.4432e-02
-epoch 57 loss = 1.4065e-02
-epoch 58 loss = 1.3811e-02
-epoch 59 loss = 1.3536e-02
-epoch 60 loss = 1.3246e-02
-epoch 61 loss = 1.3026e-02
-epoch 62 loss = 1.2736e-02
-epoch 63 loss = 1.2386e-02
-epoch 64 loss = 1.2070e-02
-epoch 65 loss = 1.1768e-02
-epoch 66 loss = 1.1445e-02
-epoch 67 loss = 1.1154e-02
-epoch 68 loss = 1.085e-02
-epoch 69 loss = 1.0535e-02
-epoch 70 loss = 1.0242e-02
-epoch 71 loss = 9.9476e-03
-epoch 72 loss = 9.655e-03
-epoch 73 loss = 9.3715e-03
-epoch 74 loss = 9.1267e-03
-epoch 75 loss = 8.8937e-03
-epoch 76 loss = 8.6652e-03
-epoch 77 loss = 8.4579e-03
-epoch 78 loss = 8.2528e-03
-epoch 79 loss = 8.0384e-03
-epoch 80 loss = 7.8365e-03
-epoch 81 loss = 7.6392e-03
-epoch 82 loss = 7.4379e-03
-epoch 83 loss = 7.2526e-03
-epoch 84 loss = 7.069e-03
-epoch 85 loss = 6.8936e-03
-epoch 86 loss = 6.7338e-03
-epoch 87 loss = 6.5760e-03
-epoch 88 loss = 6.4243e-03
-epoch 89 loss = 6.283e-03
-epoch 90 loss = 6.1485e-03
-epoch 91 loss = 6.0252e-03
-epoch 92 loss = 5.9076e-03
-epoch 93 loss = 5.7938e-03
-epoch 94 loss = 5.6883e-03
-epoch 95 loss = 5.5874e-03
-epoch 96 loss = 5.4915e-03
-epoch 97 loss = 5.3979e-03
-epoch 98 loss = 5.3076e-03
-epoch 99 loss = 5.2198e-03
-epoch 100 loss = 5.1359e-03
-epoch 101 loss = 5.0536e-03
-epoch 102 loss = 4.9737e-03
-epoch 103 loss = 4.8964e-03
-epoch 104 loss = 4.8197e-03
-epoch 105 loss = 4.7455e-03
-epoch 106 loss = 4.6731e-03
-epoch 107 loss = 4.604e-03
-epoch 108 loss = 4.5421e-03
-epoch 109 loss = 4.4949e-03
-epoch 110 loss = 4.4795e-03
-epoch 111 loss = 4.5435e-03
-epoch 112 loss = 4.8123e-03
-epoch 113 loss = 5.5005e-03
-epoch 114 loss = 6.6760e-03
-epoch 115 loss = 7.1999e-03
-epoch 116 loss = 5.6201e-03
-epoch 117 loss = 4.0119e-03
-epoch 118 loss = 4.8229e-03
-epoch 119 loss = 5.0105e-03
-epoch 120 loss = 3.9824e-03
-epoch 121 loss = 4.2105e-03
-epoch 122 loss = 4.2453e-03
-epoch 123 loss = 3.879e-03
-epoch 124 loss = 3.8564e-03
-epoch 125 loss = 3.7499e-03
-epoch 126 loss = 3.7596e-03
-epoch 127 loss = 3.4467e-03
-epoch 128 loss = 3.5539e-03
-epoch 129 loss = 3.4696e-03
-epoch 130 loss = 3.1664e-03
-epoch 131 loss = 3.4022e-03
-epoch 132 loss = 3.1017e-03
-epoch 133 loss = 3.0662e-03
-epoch 134 loss = 3.1361e-03
-epoch 135 loss = 2.8894e-03
-epoch 136 loss = 2.9482e-03
-epoch 137 loss = 2.8587e-03
-epoch 138 loss = 2.7827e-03
-epoch 139 loss = 2.7336e-03
-epoch 140 loss = 2.6879e-03
-epoch 141 loss = 2.6411e-03
-epoch 142 loss = 2.5402e-03
-epoch 143 loss = 2.5694e-03
-epoch 144 loss = 2.4652e-03
-epoch 145 loss = 2.4149e-03
-epoch 146 loss = 2.4245e-03
-epoch 147 loss = 2.3217e-03
-epoch 148 loss = 2.3056e-03
-epoch 149 loss = 2.2711e-03
-epoch 150 loss = 2.2176e-03
-epoch 151 loss = 2.1853e-03
-epoch 152 loss = 2.1439e-03
-epoch 153 loss = 2.1231e-03
-epoch 154 loss = 2.0684e-03
-epoch 155 loss = 2.0421e-03
-epoch 156 loss = 2.0229e-03
-epoch 157 loss = 1.9687e-03
-epoch 158 loss = 1.9501e-03
-epoch 159 loss = 1.9236e-03
-epoch 160 loss = 1.8848e-03
-epoch 161 loss = 1.8627e-03
-epoch 162 loss = 1.8332e-03
-epoch 163 loss = 1.8094e-03
-epoch 164 loss = 1.7810e-03
-epoch 165 loss = 1.7528e-03
-epoch 166 loss = 1.7362e-03
-epoch 167 loss = 1.7074e-03
-epoch 168 loss = 1.681e-03
-epoch 169 loss = 1.6641e-03
-epoch 170 loss = 1.6393e-03
-epoch 171 loss = 1.6164e-03
-epoch 172 loss = 1.5959e-03
-epoch 173 loss = 1.5739e-03
-epoch 174 loss = 1.5556e-03
-epoch 175 loss = 1.5338e-03
-epoch 176 loss = 1.5122e-03
-epoch 177 loss = 1.4956e-03
-epoch 178 loss = 1.4765e-03
-epoch 179 loss = 1.4561e-03
-epoch 180 loss = 1.4386e-03
-epoch 181 loss = 1.4205e-03
-epoch 182 loss = 1.4029e-03
-epoch 183 loss = 1.3864e-03
-epoch 184 loss = 1.3681e-03
-epoch 185 loss = 1.3510e-03
-epoch 186 loss = 1.3359e-03
-epoch 187 loss = 1.3193e-03
-epoch 188 loss = 1.3029e-03
-epoch 189 loss = 1.2875e-03
-epoch 190 loss = 1.2720e-03
-epoch 191 loss = 1.2568e-03
-epoch 192 loss = 1.2424e-03
-epoch 193 loss = 1.2275e-03
-epoch 194 loss = 1.2126e-03
-epoch 195 loss = 1.1984e-03
-epoch 196 loss = 1.1843e-03
-epoch 197 loss = 1.1708e-03
-epoch 198 loss = 1.1573e-03
-epoch 199 loss = 1.1436e-03
-epoch 200 loss = 1.1300e-03
-epoch 201 loss = 1.117e-03
-epoch 202 loss = 1.1041e-03
-epoch 203 loss = 1.0914e-03
-epoch 204 loss = 1.0791e-03
-epoch 205 loss = 1.0665e-03
-epoch 206 loss = 1.0543e-03
-epoch 207 loss = 1.0423e-03
-epoch 208 loss = 1.0305e-03
-epoch 209 loss = 1.0189e-03
-epoch 210 loss = 1.0074e-03
-epoch 211 loss = 9.9631e-04
-epoch 212 loss = 9.8516e-04
-epoch 213 loss = 9.7425e-04
-epoch 214 loss = 9.6347e-04
-epoch 215 loss = 9.5284e-04
-epoch 216 loss = 9.4253e-04
-epoch 217 loss = 9.3229e-04
-epoch 218 loss = 9.2228e-04
-epoch 219 loss = 9.1248e-04
-epoch 220 loss = 9.028e-04
-epoch 221 loss = 8.9324e-04
-epoch 222 loss = 8.8382e-04
-epoch 223 loss = 8.7455e-04
-epoch 224 loss = 8.6541e-04
-epoch 225 loss = 8.5636e-04
-epoch 226 loss = 8.4756e-04
-epoch 227 loss = 8.3885e-04
-epoch 228 loss = 8.3065e-04
-epoch 229 loss = 8.2251e-04
-epoch 230 loss = 8.1493e-04
-epoch 231 loss = 8.0786e-04
-epoch 232 loss = 8.0185e-04
-epoch 233 loss = 7.9739e-04
-epoch 234 loss = 7.9556e-04
-epoch 235 loss = 7.9846e-04
-epoch 236 loss = 8.0909e-04
-epoch 237 loss = 8.3308e-04
-epoch 238 loss = 8.7964e-04
-epoch 239 loss = 9.6577e-04
-epoch 240 loss = 1.1277e-03
-epoch 241 loss = 1.3733e-03
-epoch 242 loss = 1.7543e-03
-epoch 243 loss = 2.0800e-03
-epoch 244 loss = 2.2018e-03
-epoch 245 loss = 1.7148e-03
-epoch 246 loss = 1.0119e-03
-epoch 247 loss = 7.1210e-04
-epoch 248 loss = 1.008e-03
-epoch 249 loss = 1.2729e-03
-epoch 250 loss = 1.0223e-03
-epoch 251 loss = 7.2964e-04
-epoch 252 loss = 8.343e-04
-epoch 253 loss = 9.6434e-04
-epoch 254 loss = 8.2431e-04
-epoch 255 loss = 7.1593e-04
-epoch 256 loss = 8.0101e-04
-epoch 257 loss = 7.9987e-04
-epoch 258 loss = 6.7852e-04
-epoch 259 loss = 6.932e-04
-epoch 260 loss = 7.6847e-04
-epoch 261 loss = 6.9237e-04
-epoch 262 loss = 6.0801e-04
-epoch 263 loss = 6.6508e-04
-epoch 264 loss = 7.0217e-04
-epoch 265 loss = 6.2562e-04
-epoch 266 loss = 5.8145e-04
-epoch 267 loss = 6.2799e-04
-epoch 268 loss = 6.3647e-04
-epoch 269 loss = 5.8285e-04
-epoch 270 loss = 5.6869e-04
-epoch 271 loss = 5.9136e-04
-epoch 272 loss = 5.7923e-04
-epoch 273 loss = 5.5110e-04
-epoch 274 loss = 5.5397e-04
-epoch 275 loss = 5.6065e-04
-epoch 276 loss = 5.3943e-04
-epoch 277 loss = 5.2376e-04
-epoch 278 loss = 5.3335e-04
-epoch 279 loss = 5.3436e-04
-epoch 280 loss = 5.1320e-04
-epoch 281 loss = 5.0070e-04
-epoch 282 loss = 5.0701e-04
-epoch 283 loss = 5.0765e-04
-epoch 284 loss = 4.9348e-04
-epoch 285 loss = 4.8297e-04
-epoch 286 loss = 4.8335e-04
-epoch 287 loss = 4.8167e-04
-epoch 288 loss = 4.7243e-04
-epoch 289 loss = 4.653e-04
-epoch 290 loss = 4.6406e-04
-epoch 291 loss = 4.6131e-04
-epoch 292 loss = 4.5306e-04
-epoch 293 loss = 4.4593e-04
-epoch 294 loss = 4.4414e-04
-epoch 295 loss = 4.4268e-04
-epoch 296 loss = 4.3693e-04
-epoch 297 loss = 4.2954e-04
-epoch 298 loss = 4.2572e-04
-epoch 299 loss = 4.2362e-04
-epoch 300 loss = 4.1965e-04
-epoch 301 loss = 4.1406e-04
-epoch 302 loss = 4.0972e-04
-epoch 303 loss = 4.0715e-04
-epoch 304 loss = 4.0414e-04
-epoch 305 loss = 3.9947e-04
-epoch 306 loss = 3.9433e-04
-epoch 307 loss = 3.9060e-04
-epoch 308 loss = 3.8796e-04
-epoch 309 loss = 3.8483e-04
-epoch 310 loss = 3.8078e-04
-epoch 311 loss = 3.7671e-04
-epoch 312 loss = 3.7335e-04
-epoch 313 loss = 3.7051e-04
-epoch 314 loss = 3.6756e-04
-epoch 315 loss = 3.6396e-04
-epoch 316 loss = 3.601e-04
-epoch 317 loss = 3.5670e-04
-epoch 318 loss = 3.5384e-04
-epoch 319 loss = 3.5098e-04
-epoch 320 loss = 3.4778e-04
-epoch 321 loss = 3.4451e-04
-epoch 322 loss = 3.4134e-04
-epoch 323 loss = 3.3837e-04
-epoch 324 loss = 3.3565e-04
-epoch 325 loss = 3.3294e-04
-epoch 326 loss = 3.301e-04
-epoch 327 loss = 3.2717e-04
-epoch 328 loss = 3.2439e-04
-epoch 329 loss = 3.219e-04
-epoch 330 loss = 3.1976e-04
-epoch 331 loss = 3.1808e-04
-epoch 332 loss = 3.1706e-04
-epoch 333 loss = 3.1724e-04
-epoch 334 loss = 3.1993e-04
-epoch 335 loss = 3.2767e-04
-epoch 336 loss = 3.4386e-04
-epoch 337 loss = 3.7978e-04
-epoch 338 loss = 4.4906e-04
-epoch 339 loss = 5.9643e-04
-epoch 340 loss = 8.5043e-04
-epoch 341 loss = 1.3442e-03
-epoch 342 loss = 1.9427e-03
-epoch 343 loss = 2.6016e-03
-epoch 344 loss = 2.3424e-03
-epoch 345 loss = 1.3905e-03
-epoch 346 loss = 5.4731e-04
-epoch 347 loss = 7.2168e-04
-epoch 348 loss = 1.1491e-03
-epoch 349 loss = 7.7300e-04
-epoch 350 loss = 4.8988e-04
-epoch 351 loss = 8.1857e-04
-epoch 352 loss = 7.6559e-04
-epoch 353 loss = 3.2727e-04
-epoch 354 loss = 4.3289e-04
-epoch 355 loss = 6.7649e-04
-epoch 356 loss = 4.4347e-04
-epoch 357 loss = 3.4049e-04
-epoch 358 loss = 4.8674e-04
-epoch 359 loss = 3.7911e-04
-epoch 360 loss = 3.2968e-04
-epoch 361 loss = 4.5728e-04
-epoch 362 loss = 3.5043e-04
-epoch 363 loss = 2.6241e-04
-epoch 364 loss = 3.7907e-04
-epoch 365 loss = 3.4905e-04
-epoch 366 loss = 2.7437e-04
-epoch 367 loss = 3.3106e-04
-epoch 368 loss = 3.0031e-04
-epoch 369 loss = 2.5313e-04
-epoch 370 loss = 3.1421e-04
-epoch 371 loss = 2.9840e-04
-epoch 372 loss = 2.4085e-04
-epoch 373 loss = 2.7193e-04
-epoch 374 loss = 2.7299e-04
-epoch 375 loss = 2.418e-04
-epoch 376 loss = 2.6444e-04
-epoch 377 loss = 2.6012e-04
-epoch 378 loss = 2.2636e-04
-epoch 379 loss = 2.4157e-04
-epoch 380 loss = 2.5080e-04
-epoch 381 loss = 2.2939e-04
-epoch 382 loss = 2.3282e-04
-epoch 383 loss = 2.3555e-04
-epoch 384 loss = 2.1829e-04
-epoch 385 loss = 2.2178e-04
-epoch 386 loss = 2.3018e-04
-epoch 387 loss = 2.1813e-04
-epoch 388 loss = 2.1415e-04
-epoch 389 loss = 2.1838e-04
-epoch 390 loss = 2.1068e-04
-epoch 391 loss = 2.0757e-04
-epoch 392 loss = 2.1309e-04
-epoch 393 loss = 2.0893e-04
-epoch 394 loss = 2.0292e-04
-epoch 395 loss = 2.0468e-04
-epoch 396 loss = 2.0259e-04
-epoch 397 loss = 1.9772e-04
-epoch 398 loss = 1.9910e-04
-epoch 399 loss = 1.9948e-04
-epoch 400 loss = 1.9511e-04</code></pre>
+<pre><code>epoch 1 loss = 8.2155e-01
+epoch 2 loss = 7.4085e-01
+epoch 3 loss = 6.4534e-01
+epoch 4 loss = 4.8344e-01
+epoch 5 loss = 4.8184e-01
+epoch 6 loss = 4.5387e-01
+epoch 7 loss = 3.9579e-01
+epoch 8 loss = 3.7095e-01
+epoch 9 loss = 3.3925e-01
+epoch 10 loss = 3.0197e-01
+epoch 11 loss = 2.8023e-01
+epoch 12 loss = 2.5817e-01
+epoch 13 loss = 2.4296e-01
+epoch 14 loss = 2.3631e-01
+epoch 15 loss = 2.271e-01
+epoch 16 loss = 2.1174e-01
+epoch 17 loss = 2.0173e-01
+epoch 18 loss = 1.9554e-01
+epoch 19 loss = 1.8771e-01
+epoch 20 loss = 1.7975e-01
+epoch 21 loss = 1.6976e-01
+epoch 22 loss = 1.6103e-01
+epoch 23 loss = 1.5026e-01
+epoch 24 loss = 1.3971e-01
+epoch 25 loss = 1.2882e-01
+epoch 26 loss = 1.1729e-01
+epoch 27 loss = 1.065e-01
+epoch 28 loss = 9.6526e-02
+epoch 29 loss = 8.6951e-02
+epoch 30 loss = 7.8627e-02
+epoch 31 loss = 7.0401e-02
+epoch 32 loss = 6.3924e-02
+epoch 33 loss = 5.8911e-02
+epoch 34 loss = 5.5006e-02
+epoch 35 loss = 5.1995e-02
+epoch 36 loss = 5.0566e-02
+epoch 37 loss = 4.8634e-02
+epoch 38 loss = 4.7474e-02
+epoch 39 loss = 4.7193e-02
+epoch 40 loss = 4.7940e-02
+epoch 41 loss = 5.2896e-02
+epoch 42 loss = 5.9132e-02
+epoch 43 loss = 4.8067e-02
+epoch 44 loss = 4.2177e-02
+epoch 45 loss = 4.8879e-02
+epoch 46 loss = 3.9875e-02
+epoch 47 loss = 4.2604e-02
+epoch 48 loss = 4.1113e-02
+epoch 49 loss = 3.8979e-02
+epoch 50 loss = 3.9686e-02
+epoch 51 loss = 3.7978e-02
+epoch 52 loss = 3.7426e-02
+epoch 53 loss = 3.6782e-02
+epoch 54 loss = 3.5568e-02
+epoch 55 loss = 3.4666e-02
+epoch 56 loss = 3.3975e-02
+epoch 57 loss = 3.2523e-02
+epoch 58 loss = 3.2201e-02
+epoch 59 loss = 3.0572e-02
+epoch 60 loss = 3.0382e-02
+epoch 61 loss = 2.8892e-02
+epoch 62 loss = 2.8115e-02
+epoch 63 loss = 2.7071e-02
+epoch 64 loss = 2.5838e-02
+epoch 65 loss = 2.4633e-02
+epoch 66 loss = 2.369e-02
+epoch 67 loss = 2.225e-02
+epoch 68 loss = 2.1503e-02
+epoch 69 loss = 2.0067e-02
+epoch 70 loss = 1.9367e-02
+epoch 71 loss = 1.8188e-02
+epoch 72 loss = 1.7298e-02
+epoch 73 loss = 1.6423e-02
+epoch 74 loss = 1.5630e-02
+epoch 75 loss = 1.4770e-02
+epoch 76 loss = 1.4277e-02
+epoch 77 loss = 1.3544e-02
+epoch 78 loss = 1.3142e-02
+epoch 79 loss = 1.266e-02
+epoch 80 loss = 1.2276e-02
+epoch 81 loss = 1.1928e-02
+epoch 82 loss = 1.1651e-02
+epoch 83 loss = 1.132e-02
+epoch 84 loss = 1.1146e-02
+epoch 85 loss = 1.0812e-02
+epoch 86 loss = 1.0640e-02
+epoch 87 loss = 1.0346e-02
+epoch 88 loss = 1.0115e-02
+epoch 89 loss = 9.8678e-03
+epoch 90 loss = 9.5919e-03
+epoch 91 loss = 9.3518e-03
+epoch 92 loss = 9.0759e-03
+epoch 93 loss = 8.8265e-03
+epoch 94 loss = 8.5736e-03
+epoch 95 loss = 8.3326e-03
+epoch 96 loss = 8.0972e-03
+epoch 97 loss = 7.8782e-03
+epoch 98 loss = 7.6577e-03
+epoch 99 loss = 7.4597e-03
+epoch 100 loss = 7.2663e-03
+epoch 101 loss = 7.0822e-03
+epoch 102 loss = 6.9131e-03
+epoch 103 loss = 6.7434e-03
+epoch 104 loss = 6.5875e-03
+epoch 105 loss = 6.4347e-03
+epoch 106 loss = 6.2886e-03
+epoch 107 loss = 6.1507e-03
+epoch 108 loss = 6.0154e-03
+epoch 109 loss = 5.8867e-03
+epoch 110 loss = 5.7649e-03
+epoch 111 loss = 5.6437e-03
+epoch 112 loss = 5.5332e-03
+epoch 113 loss = 5.4245e-03
+epoch 114 loss = 5.3208e-03
+epoch 115 loss = 5.2267e-03
+epoch 116 loss = 5.1309e-03
+epoch 117 loss = 5.0453e-03
+epoch 118 loss = 4.9602e-03
+epoch 119 loss = 4.8775e-03
+epoch 120 loss = 4.8005e-03
+epoch 121 loss = 4.7221e-03
+epoch 122 loss = 4.6473e-03
+epoch 123 loss = 4.5739e-03
+epoch 124 loss = 4.5008e-03
+epoch 125 loss = 4.4290e-03
+epoch 126 loss = 4.3590e-03
+epoch 127 loss = 4.2876e-03
+epoch 128 loss = 4.2188e-03
+epoch 129 loss = 4.1503e-03
+epoch 130 loss = 4.0826e-03
+epoch 131 loss = 4.0159e-03
+epoch 132 loss = 3.9502e-03
+epoch 133 loss = 3.8851e-03
+epoch 134 loss = 3.8207e-03
+epoch 135 loss = 3.7579e-03
+epoch 136 loss = 3.6948e-03
+epoch 137 loss = 3.6329e-03
+epoch 138 loss = 3.5718e-03
+epoch 139 loss = 3.5115e-03
+epoch 140 loss = 3.4516e-03
+epoch 141 loss = 3.3928e-03
+epoch 142 loss = 3.3345e-03
+epoch 143 loss = 3.2768e-03
+epoch 144 loss = 3.2201e-03
+epoch 145 loss = 3.1643e-03
+epoch 146 loss = 3.1091e-03
+epoch 147 loss = 3.0549e-03
+epoch 148 loss = 3.0017e-03
+epoch 149 loss = 2.9495e-03
+epoch 150 loss = 2.8982e-03
+epoch 151 loss = 2.848e-03
+epoch 152 loss = 2.7988e-03
+epoch 153 loss = 2.7507e-03
+epoch 154 loss = 2.7036e-03
+epoch 155 loss = 2.6574e-03
+epoch 156 loss = 2.6121e-03
+epoch 157 loss = 2.5678e-03
+epoch 158 loss = 2.5244e-03
+epoch 159 loss = 2.4818e-03
+epoch 160 loss = 2.4402e-03
+epoch 161 loss = 2.3995e-03
+epoch 162 loss = 2.3597e-03
+epoch 163 loss = 2.321e-03
+epoch 164 loss = 2.2831e-03
+epoch 165 loss = 2.2461e-03
+epoch 166 loss = 2.2100e-03
+epoch 167 loss = 2.1748e-03
+epoch 168 loss = 2.1405e-03
+epoch 169 loss = 2.1068e-03
+epoch 170 loss = 2.074e-03
+epoch 171 loss = 2.042e-03
+epoch 172 loss = 2.0107e-03
+epoch 173 loss = 1.9802e-03
+epoch 174 loss = 1.9505e-03
+epoch 175 loss = 1.9215e-03
+epoch 176 loss = 1.8931e-03
+epoch 177 loss = 1.8654e-03
+epoch 178 loss = 1.8384e-03
+epoch 179 loss = 1.8120e-03
+epoch 180 loss = 1.7862e-03
+epoch 181 loss = 1.7610e-03
+epoch 182 loss = 1.7363e-03
+epoch 183 loss = 1.7122e-03
+epoch 184 loss = 1.6885e-03
+epoch 185 loss = 1.6653e-03
+epoch 186 loss = 1.6427e-03
+epoch 187 loss = 1.6205e-03
+epoch 188 loss = 1.5989e-03
+epoch 189 loss = 1.5778e-03
+epoch 190 loss = 1.5573e-03
+epoch 191 loss = 1.5379e-03
+epoch 192 loss = 1.5206e-03
+epoch 193 loss = 1.5071e-03
+epoch 194 loss = 1.5021e-03
+epoch 195 loss = 1.5185e-03
+epoch 196 loss = 1.5856e-03
+epoch 197 loss = 1.7829e-03
+epoch 198 loss = 2.2682e-03
+epoch 199 loss = 3.3796e-03
+epoch 200 loss = 5.2142e-03
+epoch 201 loss = 6.7241e-03
+epoch 202 loss = 4.8273e-03
+epoch 203 loss = 1.7260e-03
+epoch 204 loss = 2.0891e-03
+epoch 205 loss = 3.6923e-03
+epoch 206 loss = 2.2138e-03
+epoch 207 loss = 1.4608e-03
+epoch 208 loss = 2.8068e-03
+epoch 209 loss = 1.9051e-03
+epoch 210 loss = 1.4191e-03
+epoch 211 loss = 2.3544e-03
+epoch 212 loss = 1.4942e-03
+epoch 213 loss = 1.4848e-03
+epoch 214 loss = 1.9594e-03
+epoch 215 loss = 1.2159e-03
+epoch 216 loss = 1.5578e-03
+epoch 217 loss = 1.5672e-03
+epoch 218 loss = 1.137e-03
+epoch 219 loss = 1.5317e-03
+epoch 220 loss = 1.2545e-03
+epoch 221 loss = 1.1778e-03
+epoch 222 loss = 1.3977e-03
+epoch 223 loss = 1.0851e-03
+epoch 224 loss = 1.2199e-03
+epoch 225 loss = 1.2228e-03
+epoch 226 loss = 1.0328e-03
+epoch 227 loss = 1.2000e-03
+epoch 228 loss = 1.0747e-03
+epoch 229 loss = 1.0323e-03
+epoch 230 loss = 1.1263e-03
+epoch 231 loss = 9.8404e-04
+epoch 232 loss = 1.0296e-03
+epoch 233 loss = 1.0345e-03
+epoch 234 loss = 9.4081e-04
+epoch 235 loss = 1.0055e-03
+epoch 236 loss = 9.5542e-04
+epoch 237 loss = 9.2134e-04
+epoch 238 loss = 9.6229e-04
+epoch 239 loss = 8.9963e-04
+epoch 240 loss = 9.0467e-04
+epoch 241 loss = 9.1333e-04
+epoch 242 loss = 8.6303e-04
+epoch 243 loss = 8.8175e-04
+epoch 244 loss = 8.6798e-04
+epoch 245 loss = 8.3659e-04
+epoch 246 loss = 8.5344e-04
+epoch 247 loss = 8.2997e-04
+epoch 248 loss = 8.1350e-04
+epoch 249 loss = 8.2295e-04
+epoch 250 loss = 7.9848e-04
+epoch 251 loss = 7.9071e-04
+epoch 252 loss = 7.9310e-04
+epoch 253 loss = 7.7155e-04
+epoch 254 loss = 7.6778e-04
+epoch 255 loss = 7.6541e-04
+epoch 256 loss = 7.4756e-04
+epoch 257 loss = 7.4496e-04
+epoch 258 loss = 7.3986e-04
+epoch 259 loss = 7.2529e-04
+epoch 260 loss = 7.2263e-04
+epoch 261 loss = 7.1634e-04
+epoch 262 loss = 7.0429e-04
+epoch 263 loss = 7.0100e-04
+epoch 264 loss = 6.9452e-04
+epoch 265 loss = 6.8423e-04
+epoch 266 loss = 6.8027e-04
+epoch 267 loss = 6.7406e-04
+epoch 268 loss = 6.6498e-04
+epoch 269 loss = 6.605e-04
+epoch 270 loss = 6.5475e-04
+epoch 271 loss = 6.4654e-04
+epoch 272 loss = 6.4166e-04
+epoch 273 loss = 6.3633e-04
+epoch 274 loss = 6.2891e-04
+epoch 275 loss = 6.2364e-04
+epoch 276 loss = 6.1873e-04
+epoch 277 loss = 6.1203e-04
+epoch 278 loss = 6.0647e-04
+epoch 279 loss = 6.0177e-04
+epoch 280 loss = 5.9577e-04
+epoch 281 loss = 5.9010e-04
+epoch 282 loss = 5.8548e-04
+epoch 283 loss = 5.8009e-04
+epoch 284 loss = 5.7451e-04
+epoch 285 loss = 5.6982e-04
+epoch 286 loss = 5.6495e-04
+epoch 287 loss = 5.596e-04
+epoch 288 loss = 5.5484e-04
+epoch 289 loss = 5.503e-04
+epoch 290 loss = 5.4535e-04
+epoch 291 loss = 5.4053e-04
+epoch 292 loss = 5.3614e-04
+epoch 293 loss = 5.3158e-04
+epoch 294 loss = 5.2687e-04
+epoch 295 loss = 5.2250e-04
+epoch 296 loss = 5.1821e-04
+epoch 297 loss = 5.1374e-04
+epoch 298 loss = 5.0938e-04
+epoch 299 loss = 5.0527e-04
+epoch 300 loss = 5.0108e-04
+epoch 301 loss = 4.9686e-04
+epoch 302 loss = 4.9278e-04
+epoch 303 loss = 4.8881e-04
+epoch 304 loss = 4.8479e-04
+epoch 305 loss = 4.8081e-04
+epoch 306 loss = 4.7694e-04
+epoch 307 loss = 4.7312e-04
+epoch 308 loss = 4.6928e-04
+epoch 309 loss = 4.6549e-04
+epoch 310 loss = 4.6178e-04
+epoch 311 loss = 4.5811e-04
+epoch 312 loss = 4.5443e-04
+epoch 313 loss = 4.5081e-04
+epoch 314 loss = 4.4727e-04
+epoch 315 loss = 4.4373e-04
+epoch 316 loss = 4.4021e-04
+epoch 317 loss = 4.3674e-04
+epoch 318 loss = 4.3334e-04
+epoch 319 loss = 4.2996e-04
+epoch 320 loss = 4.2660e-04
+epoch 321 loss = 4.2328e-04
+epoch 322 loss = 4.2001e-04
+epoch 323 loss = 4.1677e-04
+epoch 324 loss = 4.1357e-04
+epoch 325 loss = 4.1038e-04
+epoch 326 loss = 4.0725e-04
+epoch 327 loss = 4.0414e-04
+epoch 328 loss = 4.0106e-04
+epoch 329 loss = 3.9801e-04
+epoch 330 loss = 3.9499e-04
+epoch 331 loss = 3.9202e-04
+epoch 332 loss = 3.8906e-04
+epoch 333 loss = 3.8614e-04
+epoch 334 loss = 3.8324e-04
+epoch 335 loss = 3.8037e-04
+epoch 336 loss = 3.7753e-04
+epoch 337 loss = 3.7472e-04
+epoch 338 loss = 3.7196e-04
+epoch 339 loss = 3.6919e-04
+epoch 340 loss = 3.6647e-04
+epoch 341 loss = 3.6377e-04
+epoch 342 loss = 3.611e-04
+epoch 343 loss = 3.5846e-04
+epoch 344 loss = 3.5584e-04
+epoch 345 loss = 3.5326e-04
+epoch 346 loss = 3.5068e-04
+epoch 347 loss = 3.4814e-04
+epoch 348 loss = 3.4562e-04
+epoch 349 loss = 3.4313e-04
+epoch 350 loss = 3.4066e-04
+epoch 351 loss = 3.3822e-04
+epoch 352 loss = 3.3582e-04
+epoch 353 loss = 3.3341e-04
+epoch 354 loss = 3.3104e-04
+epoch 355 loss = 3.2868e-04
+epoch 356 loss = 3.2635e-04
+epoch 357 loss = 3.2404e-04
+epoch 358 loss = 3.2174e-04
+epoch 359 loss = 3.1948e-04
+epoch 360 loss = 3.1722e-04
+epoch 361 loss = 3.1499e-04
+epoch 362 loss = 3.1276e-04
+epoch 363 loss = 3.1055e-04
+epoch 364 loss = 3.0836e-04
+epoch 365 loss = 3.0618e-04
+epoch 366 loss = 3.0402e-04
+epoch 367 loss = 3.0186e-04
+epoch 368 loss = 2.9972e-04
+epoch 369 loss = 2.9759e-04
+epoch 370 loss = 2.9548e-04
+epoch 371 loss = 2.9336e-04
+epoch 372 loss = 2.9124e-04
+epoch 373 loss = 2.8913e-04
+epoch 374 loss = 2.8703e-04
+epoch 375 loss = 2.8494e-04
+epoch 376 loss = 2.8285e-04
+epoch 377 loss = 2.8079e-04
+epoch 378 loss = 2.7875e-04
+epoch 379 loss = 2.7671e-04
+epoch 380 loss = 2.7469e-04
+epoch 381 loss = 2.7273e-04
+epoch 382 loss = 2.7078e-04
+epoch 383 loss = 2.6885e-04
+epoch 384 loss = 2.6693e-04
+epoch 385 loss = 2.6504e-04
+epoch 386 loss = 2.6316e-04
+epoch 387 loss = 2.6129e-04
+epoch 388 loss = 2.5944e-04
+epoch 389 loss = 2.576e-04
+epoch 390 loss = 2.5578e-04
+epoch 391 loss = 2.5398e-04
+epoch 392 loss = 2.522e-04
+epoch 393 loss = 2.5043e-04
+epoch 394 loss = 2.4868e-04
+epoch 395 loss = 2.4696e-04
+epoch 396 loss = 2.4524e-04
+epoch 397 loss = 2.4356e-04
+epoch 398 loss = 2.419e-04
+epoch 399 loss = 2.4025e-04
+epoch 400 loss = 2.3863e-04</code></pre>
 </div>
 </div>
 </section>
 <section id="evaluate-the-model" class="level1">
 <h1>Evaluate the model</h1>
-<div id="1f55d631" class="cell" data-execution_count="7">
+<div id="0648bdc7" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>ROM.<span class="bu">eval</span>()</span>
@@ -782,7 +787,7 @@ epoch 400 loss = 1.9511e-04</code></pre>
 </section>
 <section id="plots" class="level1">
 <h1>Plots</h1>
-<div id="0e74fdf1" class="cell" data-execution_count="8">
+<div id="27fcf7bb" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>loss_t_vect <span class="op">=</span> [loss_t.cpu() <span class="cf">for</span> loss_t <span class="kw">in</span> loss_t_vect]</span>
@@ -804,14 +809,14 @@ epoch 400 loss = 1.9511e-04</code></pre>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Autoencoder_files/figure-html/cell-9-output-1.png" width="573" height="415" class="figure-img"></p>
+<p><img src="Autoencoder_files/figure-html/cell-8-output-1.png" width="573" height="415" class="figure-img"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Autoencoder_files/figure-html/cell-9-output-2.png" width="585" height="437" class="figure-img"></p>
+<p><img src="Autoencoder_files/figure-html/cell-8-output-2.png" width="585" height="437" class="figure-img"></p>
 </figure>
 </div>
 </div>
@@ -819,7 +824,7 @@ epoch 400 loss = 1.9511e-04</code></pre>
 </section>
 <section id="plot-the-comparison-of-the-latent-space-and-the-natural-parameter-used-to-generate-the-data" class="level1">
 <h1>Plot the comparison of the latent space and the natural parameter used to generate the data</h1>
-<div id="bb590309" class="cell" data-execution_count="9">
+<div id="8d51e632" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>Alpha_latent <span class="op">=</span> ROM(F.t(),<span class="st">"encode"</span>)</span>
@@ -831,7 +836,7 @@ epoch 400 loss = 1.9511e-04</code></pre>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Autoencoder_files/figure-html/cell-10-output-1.png" width="595" height="437" class="figure-img"></p>
+<p><img src="Autoencoder_files/figure-html/cell-9-output-1.png" width="595" height="437" class="figure-img"></p>
 </figure>
 </div>
 </div>
@@ -839,7 +844,7 @@ epoch 400 loss = 1.9511e-04</code></pre>
 </section>
 <section id="plot-reconstructed-image" class="level1">
 <h1>Plot reconstructed image</h1>
-<div id="1320e3d9" class="cell" data-execution_count="10">
+<div id="902b8334" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>F_reconstructed <span class="op">=</span> ROM(Alpha_latent.view(<span class="op">-</span><span class="dv">1</span>,<span class="dv">1</span>))</span>
@@ -851,7 +856,7 @@ epoch 400 loss = 1.9511e-04</code></pre>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Autoencoder_files/figure-html/cell-11-output-1.png" width="568" height="77" class="figure-img"></p>
+<p><img src="Autoencoder_files/figure-html/cell-10-output-1.png" width="568" height="77" class="figure-img"></p>
 </figure>
 </div>
 </div>
@@ -861,7 +866,7 @@ epoch 400 loss = 1.9511e-04</code></pre>
 <h1>Plot errors</h1>
 <section id="error-map" class="level2">
 <h2 class="anchored" data-anchor-id="error-map">Error map</h2>
-<div id="8f48f1f3" class="cell" data-execution_count="11">
+<div id="067b6820" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>plt.imshow(F_reconstructed.cpu().data<span class="op">-</span>F.t(),cmap<span class="op">=</span><span class="st">'gray'</span>)</span>
@@ -870,7 +875,7 @@ epoch 400 loss = 1.9511e-04</code></pre>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Autoencoder_files/figure-html/cell-12-output-1.png" width="568" height="77" class="figure-img"></p>
+<p><img src="Autoencoder_files/figure-html/cell-11-output-1.png" width="568" height="77" class="figure-img"></p>
 </figure>
 </div>
 </div>
@@ -878,8 +883,12 @@ epoch 400 loss = 1.9511e-04</code></pre>
 </section>
 <section id="errors-on-sliced-fields" class="level2">
 <h2 class="anchored" data-anchor-id="errors-on-sliced-fields">Errors on sliced fields</h2>
-<p>The trained model and the reference are compared for two values * <span class="math inline">\(\alpha = 1/3\)</span> &amp; * <span class="math inline">\(\alpha = 2/3\)</span>.</p>
-<div id="27e590aa" class="cell" data-execution_count="12">
+<p>The trained model and the reference are compared for two values</p>
+<ul>
+<li><span class="math inline">\(\alpha = 1/3\)</span> &amp;</li>
+<li><span class="math inline">\(\alpha = 2/3\)</span>.</li>
+</ul>
+<div id="e2982ac3" class="cell" data-execution_count="11">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>idx1 <span class="op">=</span> <span class="bu">int</span>(np.floor(<span class="fl">0.66</span><span class="op">*</span>F.shape[<span class="dv">1</span>]))</span>
@@ -899,11 +908,12 @@ epoch 400 loss = 1.9511e-04</code></pre>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Autoencoder_files/figure-html/cell-13-output-1.png" width="620" height="460" class="figure-img"></p>
+<p><img src="Autoencoder_files/figure-html/cell-12-output-1.png" width="620" height="460" class="figure-img"></p>
 </figure>
 </div>
 </div>
 </div>
+<p>With only one latent space-parameter the error are reasonably low. Using non-linear interpolation is more appropriate when the separability is low unsing linear subspaces.</p>
 
 
 </section>

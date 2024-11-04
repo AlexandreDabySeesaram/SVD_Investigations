@@ -1,5 +1,5 @@
 ---
-title: SVD
+title: Autoencoder
 format:
   html:
     code-fold: true
@@ -29,14 +29,18 @@ mps_device = torch.device("mps")
 
 The separability proprieties of several functions are investigated. This code first shows the separability proprieties of different ways of clustering the 1D space into two regions. 
 Two types of functions are used to do so:
+
 * A sharp step function (Heaviside),
 * A smooth one (Tanh).
 
 In both cases the position of the jump is parametrised by a scalar parameter $\alpha$. 
 
 Furhter investigations are conducted on moving front(s) with a 
+
 * A gaussian function that is moving 
 * Two gaussian functions moving at different rates
+
+
 
 ```{python}
 L = 10                                      # Space domain
@@ -67,6 +71,8 @@ elif Function == 'Gauss_sum':
 ```
 
 # Define the autoencoder
+
+We know that the parametrised field is (non-linearly) parametrised with a single parameter. The SVD required approximatively $15$ modes to reprensent the field. We propose to create an autoencoder with a single parameter in the latent space. *i.e.* $N_3=1$, to see how the non-linear interpolation can retrive the single parameter dependency of the function.
 
 ```{python}
 
@@ -117,12 +123,7 @@ optimizer = torch.optim.Adam(ROM.parameters(),
 ```
 
 
-# Compute its SVD
 
-```{python}
-U, S, V = torch.svd(F)
-
-```
 
 # Create validation and training sets
 
@@ -252,6 +253,7 @@ plt.show()
 ## Errors on sliced fields
 
 The trained model and the reference are compared for two values
+
 * $\alpha = 1/3$ &
 * $\alpha = 2/3$.
 
@@ -271,3 +273,5 @@ plt.ylabel(r'$f(x,\alpha)$')
 # plt.savefig(f'Results/Sliced_TruncatedField_{N}_'+Function+'.pdf', transparent=True)  
 plt.show()
 ```
+
+With only one latent space-parameter the error are reasonably low. Using non-linear interpolation is more appropriate when the separability is low unsing linear subspaces. 
